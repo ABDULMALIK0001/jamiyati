@@ -11,6 +11,13 @@
     mb.setAttribute('aria-expanded', open ? 'false' : 'true');
   });
 
+  if (mb && mn) mn.addEventListener('click', function (e) {
+    if (e.target.closest('a')) {
+      mn.setAttribute('data-open', 'false');
+      mb.setAttribute('aria-expanded', 'false');
+    }
+  });
+
   window.cardHTML = function (j) {
     var vol = j.type === 'تطوعية';
     return '<a class="card" href="opportunity.html?id=' + j.id + '">' +
