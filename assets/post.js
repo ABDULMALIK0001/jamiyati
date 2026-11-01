@@ -28,7 +28,7 @@
     if (!S.codeSent) html += '<input class="in ltr" type="email" autocomplete="email" aria-label="بريد الجمعية" placeholder="hr@namaa.org.sa" data-k="email" value="' + esc(S.email) + '">';
     else html += '<input class="in code ltr" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="رمز التحقق" placeholder="000000" data-k="code" value="' + esc(S.code) + '">' +
       '<span class="muted">أرسلنا الرمز إلى ' + esc(S.email) + ' · <b style="color:#1A1A1A;font-weight:500">أعد الإرسال بعد 0:45</b></span><span class="muted" style="font-size:13px">في النسخة التجريبية اكتب أي 4 أرقام</span>';
-    if (S.err) html += '<span class="err" role="alert">' + (S.codeSent ? 'اكتب الرمز اللي وصلك' : 'اكتب بريد صحيح') + '</span>';
+    if (S.err) html += '<span class="err" role="alert">' + (S.codeSent ? 'أدخل رمز التحقق' : 'أدخل بريدًا إلكترونيًا صحيحًا') + '</span>';
     html += '<button type="button" class="btn" id="loginBtn">' + (S.codeSent ? 'تحقق' : 'أرسل الرمز') + '</button></div>';
     login.innerHTML = html;
     var i = login.querySelector('.in'); if (i) i.focus();
@@ -49,7 +49,7 @@
 
   function renderForm() {
     var s = S.step, body = '';
-    if (s === 2) body = '<div><h2>بيانات الجمعية</h2><p class="hint">مرة وحدة بس</p></div>' +
+    if (s === 2) body = '<div><h2>بيانات الجمعية</h2><p class="hint">تُعبّأ مرة واحدة</p></div>' +
       fld('اسم الجمعية', inp('org', 'مثلًا: جمعية نماء الأهلية')) +
       '<div class="row2">' + fld('رقم الترخيص', inp('license', '1234', { ltr: 1, attrs: 'inputmode="numeric"' })) + fld('مدينة المقر', inp('hq', 'ابحث عن مدينة...', { attrs: 'type="search"' })) + '</div>' +
       fld('نبذة قصيرة', ta('orgAbout', 'مثلًا: جمعية أهلية في مكة تعمل في تنمية الأسر منذ 2012', 3)) +

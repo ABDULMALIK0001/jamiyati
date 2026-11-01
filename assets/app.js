@@ -61,7 +61,7 @@
         facts.map(function (f, i) { return '<div class="fact"><span>' + f[0] + '</span><b' + (i === 5 ? ' class="warn"' : '') + '>' + esc(f[1]) + '</b></div>'; }).join('') +
         '<a class="btn apply" href="#">قدّم ' + ARROW.replace('#1A1A1A', '#FFFFFF') + '</a><small>يفتح نموذج الجمعية</small></div>' +
         '<div class="org-card" id="org"><span class="org"><span class="org-letter">' + esc(j.letter) + '</span><span><b style="display:block;font-size:16px">' + esc(j.org) + '</b><span class="muted" style="font-size:13px">' + esc(j.city) + '</span></span></span>' +
-        '<p>' + esc(ORGS[j.org] || '') + '</p>' + (others ? '<a href="index.html#opps">فرص الجمعية الثانية (' + others + ')</a>' : '') + '</div>' +
+        '<p>' + esc(ORGS[j.org] || '') + '</p>' + (others ? '<a href="index.html#opps">فرص أخرى لدى الجمعية (' + others + ')</a>' : '') + '</div>' +
       '</aside></div>' +
       '<div class="mbar"><a class="btn apply" href="#">قدّم ' + ARROW.replace('#1A1A1A', '#FFFFFF') + '</a></div>';
     document.body.classList.add('has-mbar');
