@@ -23,7 +23,7 @@
   function pay() { return S.type === 'تطوعية' ? S.perk : (S.payFrom || '—') + ' – ' + (S.payTo || '—') + ' ريال'; }
 
   function renderLogin() {
-    var html = '<div class="login-box"><a class="brand" href="index.html"><img src="assets/logo.svg" alt="" aria-hidden="true"><b>جمعيتي</b><span class="beta">تجريبي</span></a>' +
+    var html = '<div class="login-box"><a class="brand" href="index.html"><img src="assets/logo.svg" alt="" aria-hidden="true"><b>جمعيتي</b></a>' +
       '<h1>ادخل ببريد جمعيتك</h1>';
     if (!S.codeSent) html += '<input class="in ltr" type="email" autocomplete="email" aria-label="بريد الجمعية" placeholder="hr@namaa.org.sa" data-k="email" value="' + esc(S.email) + '">';
     else html += '<input class="in code ltr" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="رمز التحقق" placeholder="000000" data-k="code" value="' + esc(S.code) + '">' +
