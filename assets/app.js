@@ -31,12 +31,10 @@
   // الرئيسية: التبويبات والكروت
   var grid = document.getElementById('jobs');
   if (grid) {
-    var count = document.getElementById('count');
     var tabs = document.querySelectorAll('.tab');
     function render(t) {
       var list = JOBS.filter(function (j) { return t === 'all' || (t === 'vol' ? j.type === 'تطوعية' : j.type !== 'تطوعية'); });
       grid.innerHTML = list.map(cardHTML).join('');
-      count.textContent = list.length === 1 ? 'فرصة واحدة' : list.length === 2 ? 'فرصتان' : list.length + ' فرص';
       tabs.forEach(function (b) { b.setAttribute('aria-selected', b.dataset.t === t ? 'true' : 'false'); });
     }
     tabs.forEach(function (b) { b.addEventListener('click', function () { render(b.dataset.t); }); });
