@@ -52,6 +52,9 @@ button{font:inherit;color:inherit}
 .btn-lg{height:56px;padding:0 30px;font-size:16px}
 .btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
 .btn-ghost:hover{box-shadow:0 6px 12px rgba(26,26,26,.06)}
+.btn:not(.btn-ghost){box-shadow:0 8px 12px rgba(26,26,26,.12),inset 0 4px 6px rgba(255,255,255,.16)}
+.btn:not(.btn-ghost):hover{box-shadow:0 10px 18px rgba(26,26,26,.18),inset 0 4px 6px rgba(255,255,255,.16)}
+.hd .btn-ghost:hover{border-color:#C9C9C9}
 .btn:focus-visible,.nav a:focus-visible,.card:focus-visible,.chip:focus-visible,.tab:focus-visible{outline:3px solid rgba(26,26,26,.35);outline-offset:2px}
 
 .wrap{max-width:1184px;margin:0 auto;padding:0 48px}
