@@ -25,7 +25,7 @@
       '<h3>' + esc(j.title) + '</h3>' +
       '<span class="meta">' + esc(j.city) + ' · ' + esc(j.mode) + ' <span class="badge' + (vol ? ' vol' : '') + '">' + esc(j.type) + '</span></span>' +
       '<span class="pay">' + esc(j.pay) + '</span>' +
-      '<span class="due' + (j.days <= 7 ? ' soon' : '') + '">' + daysLabel(j.days) + '</span></a>';
+      '<span class="due">' + esc(j.posted || '') + '</span></a>';
   };
 
   // الرئيسية: التبويبات والكروت
@@ -48,7 +48,7 @@
     var j = JOBS.filter(function (x) { return x.id === id; })[0] || JOBS[0];
     document.title = j.title + ' — جمعيتي';
     function ul(a) { return '<ul>' + a.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'; }
-    var facts = [['المقابل', j.pay], ['النوع', j.type], ['التصنيف', j.cat], ['نمط العمل', j.mode], ['المدينة', j.city], ['ينتهي التقديم', 'بعد ' + j.days + ' ' + (j.days <= 10 ? 'أيام' : 'يومًا')]];
+    var facts = [['المقابل', j.pay], ['النوع', j.type], ['التصنيف', j.cat], ['نمط العمل', j.mode], ['المدينة', j.city]];
     var others = JOBS.filter(function (x) { return x.org === j.org && x.id !== j.id; }).length;
     var url = location.href;
     var wa = 'https://wa.me/?text=' + encodeURIComponent(j.title + ' — ' + j.org + '\n' + url);
