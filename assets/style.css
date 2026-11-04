@@ -485,3 +485,5 @@ textarea.in{height:auto;padding:14px 16px;line-height:1.7;resize:vertical}
 .nav a[aria-current="page"]{color:var(--ink);font-weight:700}
 .nav a[aria-current="page"]::after{transform:scaleX(1);background:var(--brand);height:3px;bottom:0}
 .mnav a[aria-current="page"]{color:var(--brand);font-weight:700}
+select.in:invalid{color:#8A8A8A}
+select.in option{color:var(--ink)}
