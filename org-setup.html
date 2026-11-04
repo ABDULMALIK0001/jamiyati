@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=24">
+<link rel="stylesheet" href="assets/style.css?v=25">
 </head>
 <body>
 <div class="frame">
@@ -26,7 +26,7 @@
 <script>
 var f=document.getElementById('sf');
 function chk(){var ok=true;f.querySelectorAll('.lbl').forEach(function(l){var i=l.querySelector('.in'),e=l.querySelector('.ferr'),bad=!i.value.trim();i.classList.toggle('bad',bad);e.hidden=!bad;if(bad)ok=false;});return ok;}
-f.addEventListener('submit',function(ev){ev.preventDefault();if(chk())location.href='org.html?s=new';});
+f.addEventListener('submit',function(ev){ev.preventDefault();if(!chk())return;var nm=f.querySelector('[name=n]').value.trim();if(nm&&nm.indexOf('جمعية')!==0)nm='جمعية '+nm;try{sessionStorage.setItem('jam_org',nm);}catch(e){}location.href='org.html?s=new';});
 if(location.hash==='#err')chk();
 </script>
 </body></html>

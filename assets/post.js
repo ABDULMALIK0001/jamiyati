@@ -2,7 +2,7 @@
   var esc = window.esc;
   var S = {
     step: /[?&]f=1/.test(location.search) ? 3 : 1, reached: 3, codeSent: false, email: '', code: '', err: false,
-    org: 'جمعية نماء الأهلية', license: '', hq: 'مكة المكرمة', orgAbout: '',
+    org: (function () { try { return sessionStorage.getItem('jam_org') || 'جمعية نماء الأهلية'; } catch (e) { return 'جمعية نماء الأهلية'; } })(), license: '', hq: 'مكة المكرمة', orgAbout: '',
     type: 'دائمة', title: '', cat: '', city: '', mode: 'حضوري',
     payFrom: '', payTo: '', perk: 'شهادة تطوع', deadline: '',
     about: '', tasks: ['', ''], reqs: ['', ''], perks: ['', ''], apply: 'link', applyVal: '', flagged: false
@@ -81,7 +81,7 @@
       '<div class="fld"><span>نمط العمل' + STAR + '</span>' + chips(['حضوري', 'هجين', 'عن بعد'], 'mode', 'c3') + '</div>' +
       (S.type === 'تطوعية'
         ? '<div class="fld"><span>المقابل' + STAR + '</span>' + chips(['شهادة تطوع', 'بدل تنقل', 'بدون مقابل'], 'perk', 'c3') + '</div>'
-        : '<div class="fld"><span>الراتب الشهري <span class="opt">(اختياري)</span></span><div class="money"><label>' + inp('payFrom', '', { ltr: 1, attrs: 'inputmode="numeric" aria-label="من"' }) + '<span class="cur">ر.س</span></label><span class="muted">إلى</span><label>' + inp('payTo', '', { ltr: 1, attrs: 'inputmode="numeric" aria-label="إلى"' }) + '<span class="cur">ر.س</span></label></div></div>') +
+        : '<div class="fld"><span>الراتب الشهري <span class="opt">(اختياري)</span></span><div class="money"><label>' + inp('payFrom', '', { ltr: 1, attrs: 'inputmode="numeric" aria-label="من"' }) + '<span class="cur">ر.س</span></label><span class="muted">إلى</span><label>' + inp('payTo', '', { ltr: 1, attrs: 'inputmode="numeric" aria-label="إلى"' }) + '<span class="cur">ر.س</span></label></div><span class="ferr" id="payErr" hidden>اجعل الحد الأدنى أقل من الأعلى</span></div>') +
       '';
     if (s === 4) body = '<h2>التفاصيل</h2>' +
       fld('عن الفرصة', ta('about', 'مثلًا: نبحث عن شخص يتابع برامج الأسر في الأحياء', 3)) +
@@ -110,14 +110,24 @@
   }
   function go(n) { S.step = n; S.reached = Math.max(S.reached, n); render(); window.scrollTo(0, 0); }
 
+  function riskyText() {
+    var t = [S.about].concat(S.tasks, S.reqs, S.perks).join(' ');
+    t = t.replace(/(بدون|بلا|دون|من غير|لا توجد|لا يوجد|ليس هناك|لا)\s+(أي\s+)?رسوم/g, '');
+    return /رسوم|واتس|05\d{8}/.test(t);
+  }
+  function refreshFlag(el) {
+    var nf = riskyText(); if (nf === S.flagged) return;
+    S.flagged = nf; var sel = el.getAttribute('data-l') ? '[data-l="' + el.dataset.l + '"][data-i="' + el.dataset.i + '"]' : '[data-k="' + el.dataset.k + '"]', pos = el.selectionStart;
+    render(); var t = form.querySelector(sel); if (t) { t.focus(); try { t.setSelectionRange(pos, pos); } catch (x) {} }
+  }
   document.addEventListener('input', function (e) {
     if (e.target.tagName === 'TEXTAREA') grow(e.target);
     var l = e.target.getAttribute && e.target.getAttribute('data-l');
-    if (l) { S[l][+e.target.dataset.i] = e.target.value; if (/رسوم|واتس|05\d{8}/.test(e.target.value) && !S.flagged) { S.flagged = true; var ii = e.target.dataset.i, pp = e.target.selectionStart; render(); var tt = form.querySelector('[data-l="' + l + '"][data-i="' + ii + '"]'); tt.focus(); tt.setSelectionRange(pp, pp); } return; }
+    if (l) { S[l][+e.target.dataset.i] = e.target.value; refreshFlag(e.target); return; }
     var k = e.target.getAttribute && e.target.getAttribute('data-k');
     if (!k) return;
     S[k] = e.target.value;
-    if (['about'].indexOf(k) > -1 && /رسوم|واتس|05\d{8}/.test(e.target.value) && !S.flagged) { S.flagged = true; var pos = e.target.selectionStart; render(); var t = form.querySelector('[data-k="' + k + '"]'); t.focus(); t.setSelectionRange(pos, pos); }
+    if (k === 'about') refreshFlag(e.target);
   });
   document.addEventListener('change', function (e) { var k = e.target.getAttribute && e.target.getAttribute('data-k'); if (k) S[k] = e.target.value; });
   document.addEventListener('click', function (e) {
@@ -134,9 +144,9 @@
       var ok = S.codeSent ? S.code.replace(/\D/g, '').length >= 4 : /.+@.+\..+/.test(S.email);
       if (!ok) { S.err = true; renderLogin(); return; }
       S.err = false;
-      if (!S.codeSent) { S.codeSent = true; renderLogin(); } else location.href = S.email.trim().toLowerCase() === 'hr@namaa.org.sa' ? 'org.html' : 'org-setup.html';
+      if (!S.codeSent) { S.codeSent = true; renderLogin(); } else { var isNamaa = S.email.trim().toLowerCase() === 'hr@namaa.org.sa'; try { if (isNamaa) sessionStorage.setItem('jam_org', 'جمعية نماء الأهلية'); else sessionStorage.removeItem('jam_org'); } catch (e) {} location.href = isNamaa ? 'org.html' : 'org-setup.html'; }
     }
-    if (id === 'next') { var bad = false; form.querySelectorAll('.form-card .fld').forEach(function (f) { var e = f.querySelector('.ferr'); if (!e) return; var ls = f.querySelectorAll('.in[data-l]'); if (ls.length) { var none = [].every.call(ls, function (x) { return !x.value.trim(); }); ls[0].classList.toggle('bad', none); e.hidden = !none; if (none) bad = true; return; } var i = f.querySelector('.in[data-k]'); if (!i) return; var v = String(i.value).trim(), b = !v; if (!b && i.dataset.k === 'applyVal') b = S.apply === 'link' ? !/^(https?:\/\/)?[^\s.]+\.[^\s]+$/.test(v) : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); i.classList.toggle('bad', b); e.hidden = !b; if (b) bad = true; }); if (bad) { var x = form.querySelector('.in.bad'); if (x) x.focus(); return; } go(S.step + 1); }
+    if (id === 'next') { var bad = false; form.querySelectorAll('.form-card .fld').forEach(function (f) { var e = f.querySelector('.ferr'); if (!e) return; var ls = f.querySelectorAll('.in[data-l]'); if (ls.length) { var none = [].every.call(ls, function (x) { return !x.value.trim(); }); ls[0].classList.toggle('bad', none); e.hidden = !none; if (none) bad = true; return; } var i = f.querySelector('.in[data-k]'); if (!i) return; var v = String(i.value).trim(), b = !v; if (!b && i.dataset.k === 'applyVal') b = S.apply === 'link' ? !/^(https?:\/\/)?[^\s.]+\.[^\s]+$/.test(v) : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); i.classList.toggle('bad', b); e.hidden = !b; if (b) bad = true; }); var pe = document.getElementById('payErr'); if (pe) { var lo = +String(S.payFrom).replace(/\D/g, ''), hi = +String(S.payTo).replace(/\D/g, ''), wrong = lo > 0 && hi > 0 && lo > hi; pe.hidden = !wrong; form.querySelectorAll('[data-k="payFrom"],[data-k="payTo"]').forEach(function (x) { x.classList.toggle('bad', wrong); }); if (wrong) bad = true; } if (bad) { var x = form.querySelector('.in.bad'); if (x) x.focus(); return; } go(S.step + 1); }
     if (id === 'back') go(S.step - 1);
     if (id === 'again') { S.title = ''; S.cat = ''; S.city = ''; S.payFrom = S.payTo = ''; S.applyVal = ''; S.about = ''; S.tasks = ['', '']; S.reqs = ['', '']; S.perks = ['', '']; S.flagged = false; go(3); }
   });
