@@ -3,7 +3,7 @@
   --ink:#1A1A1A; --muted:#545454; --line:#E3E3E3; --soft:#F2F2F2; --bg:#F7F7F7; --card:#FFFFFF;
   --brand:#17533F; --brand-tint:#E8EFEC; --warn:#A3470A; --vol-bg:#F8EEDB; --vol-fg:#7E520D;
   --shadow:0 6px 12px rgba(26,26,26,.05);
-  --font:'thmanyah sans','Thmanyah Sans','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --font:'IBM Plex Sans Arabic',system-ui,sans-serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
