@@ -80,6 +80,35 @@
     });
   }
 
+  // النوافذ: التركيز يبقى داخل النافذة المفتوحة، ويرجع للزر اللي فتحها بعد الإغلاق
+  var FOC = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  function openOv() { return [].filter.call(document.querySelectorAll('.ov'), function (o) { return !o.hidden; })[0]; }
+  function seen(el) { return el && el.isConnected && el.getClientRects().length > 0; }
+  document.querySelectorAll('.ov').forEach(function (ov) {
+    var dlg = ov.querySelector('.dlg'); if (!dlg) return;
+    dlg.setAttribute('tabindex', '-1');
+    new MutationObserver(function () {
+      if (!ov.hidden) {
+        var a = document.activeElement;
+        if (a && !ov.contains(a) && a !== document.body) ov._opener = a;
+        setTimeout(function () { if (!ov.hidden && !ov.contains(document.activeElement)) dlg.focus(); }, 0);
+      } else {
+        var op = ov._opener; ov._opener = null;
+        if (op && !seen(op)) { var w = op.closest && op.closest('.mwrap'); op = w ? w.querySelector('.more') : null; }
+        if (seen(op)) op.focus();
+      }
+    }).observe(ov, { attributes: true, attributeFilter: ['hidden'] });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab') return;
+    var ov = openOv(); if (!ov) return;
+    var els = [].filter.call(ov.querySelectorAll(FOC), seen); if (!els.length) return;
+    var first = els[0], last = els[els.length - 1], a = document.activeElement;
+    if (!ov.contains(a)) { e.preventDefault(); (e.shiftKey ? last : first).focus(); }
+    else if (e.shiftKey && (a === first || a === ov.querySelector('.dlg'))) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && a === last) { e.preventDefault(); first.focus(); }
+  });
+
   window.alertDemo = function () {
     var t = document.getElementById('toast');
     if (!t) { t = document.createElement('div'); t.id = 'toast'; t.setAttribute('role', 'status'); t.style.cssText = 'position:fixed;left:50%;bottom:100px;transform:translateX(-50%);z-index:20;background:#1A1A1A;color:#fff;padding:12px 20px;border-radius:999px;font-size:14px;box-shadow:0 10px 24px rgba(0,0,0,.2);max-width:calc(100% - 32px);text-align:center'; document.body.appendChild(t); }

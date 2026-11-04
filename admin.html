@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=25">
+<link rel="stylesheet" href="assets/style.css?v=26">
 <style>
 .adm{max-width:1088px;margin:0 auto;padding:40px 0 96px;display:flex;flex-direction:column;gap:20px}
 .adm-hd h1{font-size:32px}
@@ -112,7 +112,7 @@
   <div class="btns"><button type="button" class="btn btn-danger" id="rejOk">تأكيد الرفض</button><button type="button" class="btn btn-ghost" data-close>رجوع</button></div>
 </div></div>
 <script src="assets/data.js"></script>
-<script src="assets/app.js?v=7"></script>
+<script src="assets/app.js?v=8"></script>
 <script>
 (function(){
   var E=window.esc;
@@ -198,6 +198,7 @@
 
   function toast(m){var t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove();},2600);}
   function done(msg){
+    if(!cur) return;
     PENDING=PENDING.filter(function(x){return x!==cur;});
     history.replaceState(null,'','admin.html'); dash(); toast(msg);
   }
@@ -206,17 +207,17 @@
     var r=e.target.closest('[data-rev]'); if(r){history.pushState(null,'','admin.html?r='+r.dataset.rev); review(r.dataset.rev); return;}
     if(e.target.closest('[data-home]')){history.pushState(null,'','admin.html'); dash(); return;}
     if(e.target.id==='accept'){
-      var p=cur; LIVE.unshift({org:p.org,type:p.type,cat:p.cat});
+      var p=cur; if(!p) return; LIVE.unshift({org:p.org,type:p.type,cat:p.cat});
       if(p.isNew){ORGS.forEach(function(o){if(o.n===p.org)o.v=true;}); PENDING.forEach(function(x){if(x.org===p.org)x.isNew=false;});}
       done('نُشرت الفرصة'); return;
     }
     if(e.target.id==='reject'){pick=null; document.querySelectorAll('#rsn input').forEach(function(i){i.checked=false;}); $('rejErr').hidden=true; $('rejDlg').hidden=false; return;}
-    if(e.target.id==='rejOk'){var c=document.querySelector('#rsn input:checked'); if(!c){$('rejErr').hidden=false; return;} $('rejDlg').hidden=true; done('رُفضت الفرصة وأُبلغت الجمعية'); return;}
+    if(e.target.id==='rejOk'){if(!cur){$('rejDlg').hidden=true; return;} var c=document.querySelector('#rsn input:checked'); if(!c){$('rejErr').hidden=false; return;} $('rejDlg').hidden=true; done('رُفضت الفرصة وأُبلغت الجمعية'); return;}
     if(e.target.closest('[data-close]')||e.target.classList.contains('ov')) $('rejDlg').hidden=true;
   });
   document.addEventListener('change',function(e){if(e.target.name==='rsn') $('rejErr').hidden=true;});
   document.addEventListener('keydown',function(e){if(e.key==='Escape') $('rejDlg').hidden=true;});
-  window.addEventListener('popstate',function(){var id=new URLSearchParams(location.search).get('r'); id?review(id):dash();});
+  window.addEventListener('popstate',function(){$('rejDlg').hidden=true; var id=new URLSearchParams(location.search).get('r'); id?review(id):dash();});
   var q=new URLSearchParams(location.search);
   q.get('r')?review(q.get('r')):dash();
   if(q.get('d')==='rej'&&cur){$('rejDlg').hidden=false;}

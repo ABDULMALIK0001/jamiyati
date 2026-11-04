@@ -40,7 +40,8 @@
     if (b) out.push(plural(b, 'ميزة واحدة', 'ميزتان', 'مزايا', 'ميزة'));
     return out.join(' · ') || '—';
   }
-  function pay() { if (S.type === 'تطوعية') return S.perk; var a = S.payFrom.trim(), b = S.payTo.trim(); if (a && b) return a + ' – ' + b + ' ريال'; if (a) return 'من ' + a + ' ريال'; if (b) return 'حتى ' + b + ' ريال'; return ''; }
+  function money(v) { var n = num(v); return n > 0 ? n.toLocaleString('en-US') : ''; }
+  function pay() { if (S.type === 'تطوعية') return S.perk; var a = money(S.payFrom), b = money(S.payTo); if (a && b) return a + ' – ' + b + ' ريال'; if (a) return 'من ' + a + ' ريال'; if (b) return 'حتى ' + b + ' ريال'; return ''; }
 
   function renderLogin() {
     var html = '<div class="login-box"><a class="brand" href="index.html"><img src="assets/logo.svg" alt="" aria-hidden="true"><b>جمعيتي</b></a>' +
@@ -81,7 +82,7 @@
       '<div class="fld"><span>نمط العمل' + STAR + '</span>' + chips(['حضوري', 'هجين', 'عن بعد'], 'mode', 'c3') + '</div>' +
       (S.type === 'تطوعية'
         ? '<div class="fld"><span>المقابل' + STAR + '</span>' + chips(['شهادة تطوع', 'بدل تنقل', 'بدون مقابل'], 'perk', 'c3') + '</div>'
-        : '<div class="fld"><span>الراتب الشهري <span class="opt">(اختياري)</span></span><div class="money"><label>' + inp('payFrom', '', { ltr: 1, attrs: 'inputmode="numeric" aria-label="من"' }) + '<span class="cur">ر.س</span></label><span class="muted">إلى</span><label>' + inp('payTo', '', { ltr: 1, attrs: 'inputmode="numeric" aria-label="إلى"' }) + '<span class="cur">ر.س</span></label></div><span class="ferr" id="payErr" hidden>اجعل الحد الأدنى أقل من الأعلى</span></div>') +
+        : '<div class="fld"><span>الراتب الشهري <span class="opt">(اختياري)</span></span><div class="money"><label>' + inp('payFrom', '', { ltr: 1, attrs: 'inputmode="numeric" maxlength="6" aria-label="من"' }) + '<span class="cur">ر.س</span></label><span class="muted">إلى</span><label>' + inp('payTo', '', { ltr: 1, attrs: 'inputmode="numeric" maxlength="6" aria-label="إلى"' }) + '<span class="cur">ر.س</span></label></div><span class="ferr" id="payErr" hidden>اجعل الحد الأدنى أقل من الأعلى</span></div>') +
       '';
     if (s === 4) body = '<h2>التفاصيل</h2>' +
       fld('عن الفرصة', ta('about', 'مثلًا: نبحث عن شخص يتابع برامج الأسر في الأحياء', 3)) +
@@ -126,6 +127,14 @@
     if (l) { S[l][+e.target.dataset.i] = e.target.value; refreshFlag(e.target); return; }
     var k = e.target.getAttribute && e.target.getAttribute('data-k');
     if (!k) return;
+    if (k === 'payFrom' || k === 'payTo') {
+      // أرقام موجبة فقط: نحوّل الأرقام العربية ونشيل أي حرف أو إشارة سالب
+      var raw = e.target.value, clean = String(raw).replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/[۰-۹]/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d); }).replace(/\D/g, '').replace(/^0+/, '').slice(0, 6);
+      if (clean !== raw) { var cp = Math.max(0, (e.target.selectionStart || 0) - (raw.length - clean.length)); e.target.value = clean; try { e.target.setSelectionRange(cp, cp); } catch (x) {} }
+      S[k] = clean;
+      var pe = document.getElementById('payErr'); if (pe && !pe.hidden) validStep();
+      return;
+    }
     S[k] = e.target.value;
     if (k === 'about') refreshFlag(e.target);
   });
@@ -165,7 +174,8 @@
     var parts = txt.split(/\r?\n/).map(function (x) { return x.replace(/^\s*[-•*\d.)]+\s*/, '').trim(); }).filter(Boolean);
     if (parts.length < 2) return;
     e.preventDefault(); var at = +e.target.dataset.i;
-    S[l].splice.apply(S[l], [at, S[l][at] ? 0 : 1].concat(parts)); S[l] = S[l].slice(0, 10); render();
+    S[l].splice.apply(S[l], [at, S[l][at] ? 0 : 1].concat(parts)); S[l] = S[l].slice(0, 10); S.flagged = riskyText(); render();
+    var last = form.querySelector('[data-l="' + l + '"][data-i="' + Math.min(at + parts.length - 1, S[l].length - 1) + '"]'); if (last) last.focus();
   });
   render();
 })();

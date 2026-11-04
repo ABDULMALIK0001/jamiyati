@@ -507,3 +507,4 @@ select.in option{color:var(--ink)}
 .doc h1+.lead{margin-top:12px}
 .doc .mailrow{margin-top:12px}
 .doc p .mail{font-size:inherit}
+.dlg:focus{outline:none}
