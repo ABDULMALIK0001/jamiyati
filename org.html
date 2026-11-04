@@ -9,27 +9,24 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=19">
+<link rel="stylesheet" href="assets/style.css?v=21">
 </head>
 <body>
 <div class="frame">
   <div class="demo-bar" role="note">نسخة تجريبية للعرض · الجمعيات والفرص المعروضة أمثلة</div>
   <header class="hd">
     <div class="hd-in">
-      <a class="brand" href="index.html"><img src="assets/logo.svg" alt="" aria-hidden="true"><b>جمعيتي</b></a>
-      <nav class="nav" aria-label="روابط الموقع">
-        <a href="index.html#opps">الفرص</a>
-        <a href="index.html#how">كيف تعمل؟</a>
-        <a href="index.html#orgs">للجمعيات</a>
-        <a href="index.html#faq">الأسئلة الشائعة</a>
+      <a class="brand" href="org.html"><img src="assets/logo.svg" alt="" aria-hidden="true"><b>جمعيتي</b></a>
+      <nav class="nav" aria-label="روابط الجمعية">
+        <a href="org.html" aria-current="page">صفحة الجمعية</a><a href="post.html?f=1">انشر فرصة</a><a href="index.html">الموقع العام</a>
       </nav>
       <div class="hd-actions">
-        <a class="btn btn-ghost" href="post.html">خروج</a>
+        <a class="btn btn-ghost" href="index.html">خروج</a>
         <button type="button" class="menu-btn" aria-label="القائمة" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7.5h14M5 12h14M5 16.5h14"/></svg></button>
       </div>
     </div>
     <nav class="mnav" data-open="false" aria-label="القائمة">
-      <a href="index.html#opps">الفرص</a><a href="index.html#how">كيف تعمل؟</a><a href="index.html#orgs">للجمعيات</a><a href="index.html#faq">الأسئلة الشائعة</a>
+      <a href="org.html" aria-current="page">صفحة الجمعية</a><a href="post.html?f=1">انشر فرصة</a><a href="index.html">الموقع العام</a>
     </nav>
   </header>
   <main class="wrap"><div class="org-wrap" id="org"></div></main>
@@ -88,13 +85,14 @@
     if(!OPPS.length){
       h+='<div class="ops-empty"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="3"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3 12h18"/></svg></span><h3>لم تنشر أي فرصة بعد</h3><p>انشر فرصتك الأولى، ونراجعها مع بيانات جمعيتك خلال يوم عمل</p><a class="btn btn-lg" href="post.html?f=1">انشر فرصتك الأولى</a></div>';
     } else {
-      h+='<div class="otabs" role="tablist" aria-label="حالة الفرص">'+TABS.map(function(t){return '<button type="button" role="tab" class="otab" data-t="'+t[0]+'" aria-selected="'+(ST.tab===t[0])+'">'+t[1]+' <span class="c">'+count(t[0])+'</span></button>';}).join('')+'</div>';
-      var list=OPPS.filter(function(o){return ST.tab==='all'||o.st===ST.tab||(ST.tab==='end'&&o.st==='no');});
-      h+='<div class="olist">'+list.map(function(o,i){
-        var menu=o.st==='live'?'<div class="mwrap"><button type="button" class="more" aria-label="خيارات الفرصة" aria-expanded="false"  aria-haspopup="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button><div class="menu" role="menu" hidden><a role="menuitem" href="opportunity.html?id='+o.id+'">عرض الفرصة</a><button type="button" role="menuitem" class="danger" data-open="stopDlg">إيقاف الفرصة</button></div></div>':'';
-        return '<article class="orow"><div class="orow-main"><div class="orow-t"><h3>'+o.t+'</h3><span class="status '+o.st+'">'+o.lab+'</span></div>'+
-          '<p class="sub">'+[o.type,o.cat,o.city].join(' · ')+'</p>'+(o.due?'<p class="sub when">'+o.due+'</p>':'')+(o.why?'<p class="reason">السبب: '+o.why+'</p>':'')+'</div>'+menu+'</article>';
-      }).join('')+(list.length?'':'<p class="olist-none">لا توجد فرص هنا</p>')+'</div>';
+      var order={no:0,wait:1,live:2}, act=OPPS.filter(function(o){return o.st!=='end';}).sort(function(a,b){return order[a.st]-order[b.st];}), old=OPPS.filter(function(o){return o.st==='end';});
+      function row(o){
+        var menu=o.st==='live'?'<div class="mwrap"><button type="button" class="more" aria-label="خيارات الفرصة" aria-expanded="false" aria-haspopup="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button><div class="menu" role="menu" hidden><a role="menuitem" href="opportunity.html?id='+o.id+'">عرض الفرصة</a><button type="button" role="menuitem" class="danger" data-open="stopDlg">إيقاف الفرصة</button></div></div>':'';
+        return '<article class="orow'+(o.st==='no'?' need':'')+'"><div class="orow-main">'+(o.st==='no'?'<span class="need-tag">تحتاج تعديل</span>':'')+'<div class="orow-t"><h3>'+o.t+'</h3><span class="status '+o.st+'">'+o.lab+'</span></div>'+
+          '<p class="sub">'+[o.type,o.cat,o.city].join(' · ')+'</p>'+(o.due?'<p class="sub when">'+o.due+'</p>':'')+(o.why?'<p class="reason">السبب: '+o.why+'. لتعديلها <a href="#">تواصل معنا</a></p>':'')+'</div>'+menu+'</article>';
+      }
+      h+='<div class="olist">'+act.map(row).join('')+'</div>';
+      if(old.length) h+='<details class="ended"><summary>الفرص المنتهية <span class="c">'+old.length+'</span></summary><div class="olist">'+old.map(row).join('')+'</div></details>';
     }
     h+='</section><p class="foot-note">لتعديل فرصة منشورة أو لأي استفسار، <a href="#">تواصل معنا</a></p>';
     document.getElementById('org').innerHTML=h;
@@ -144,7 +142,6 @@
   document.addEventListener('click',function(e){
     var o=e.target.closest('[data-open]'); if(o){closeMenus(); $(o.dataset.open).hidden=false; if(o.dataset.open==='addDlg') fitBio(); return;}
     var m=e.target.closest('.more'); if(m){var mn=m.nextElementSibling, was=!mn.hidden; closeMenus(); mn.hidden=was; m.setAttribute('aria-expanded',String(!was)); return;}
-    var tb=e.target.closest('.otab'); if(tb){ST.tab=tb.dataset.t; render(); return;}
     if(!e.target.closest('.menu')) closeMenus();
     if(e.target.closest('[data-close]')||e.target.classList.contains('ov')) closeAll();
   });

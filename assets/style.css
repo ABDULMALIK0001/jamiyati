@@ -463,3 +463,25 @@ textarea.in{height:auto;padding:14px 16px;line-height:1.7;resize:vertical}
 .tab:not([aria-selected="true"]):hover,.otab:not([aria-selected="true"]):hover{color:var(--ink)}
 .tab:not([aria-selected="true"]):hover::after,.otab:not([aria-selected="true"]):hover::after{content:"";position:absolute;right:0;left:0;bottom:-1px;height:2px;background:var(--line);border-radius:2px}
 .tab:focus-visible{outline:3px solid rgba(23,83,63,.45);outline-offset:2px}
+
+/* قائمة الفرص بدون تبويبات: اللي يحتاج تصرّف أول، والمنتهية مطوية */
+.ops .olist{margin-top:8px}
+.orow.need{background:#FBF1EA;border-radius:16px;padding:16px;border-top:0;margin:4px 0 8px}
+.orow.need+.orow{border-top:0}
+.need-tag{display:inline-block;font-size:12px;font-weight:700;color:var(--warn);margin-bottom:6px}
+.orow .reason a{color:inherit;font-weight:700;text-underline-offset:3px}
+.ended{border-top:1px solid #F0F0F0;margin-top:4px}
+.ended summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;padding:16px 0;font-size:15px;font-weight:500;color:var(--muted)}
+.ended summary::-webkit-details-marker{display:none}
+.ended summary::before{content:"";width:8px;height:8px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);margin:0 2px 4px 6px;transition:transform .2s}
+.ended[open] summary::before{transform:rotate(135deg);margin-bottom:-2px}
+.ended summary:hover{color:var(--ink)}
+.ended summary:focus-visible{outline:3px solid rgba(23,83,63,.45);outline-offset:2px;border-radius:8px}
+.ended summary .c{min-width:22px;padding:0 6px;border-radius:999px;background:var(--soft);font-size:12px;line-height:20px;text-align:center}
+.ended .olist{margin-top:0}
+.ended .orow:first-child{border-top:0}
+
+/* «أنت هنا» في الهيدر: الرابط الحالي أغمق وتحته خط أخضر */
+.nav a[aria-current="page"]{color:var(--ink);font-weight:700}
+.nav a[aria-current="page"]::after{transform:scaleX(1);background:var(--brand);height:3px;bottom:0}
+.mnav a[aria-current="page"]{color:var(--brand);font-weight:700}
