@@ -130,15 +130,23 @@
     if (k === 'about') refreshFlag(e.target);
   });
   document.addEventListener('change', function (e) { var k = e.target.getAttribute && e.target.getAttribute('data-k'); if (k) S[k] = e.target.value; });
+  function num(v) { return +String(v).replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/[۰-۹]/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d); }).replace(/\D/g, ''); }
+  function passAll(from, to) {
+    var back = S.step;
+    for (var k = from; k < to; k++) { if (S.step !== k) { S.step = k; render(); } if (!validStep()) { window.scrollTo(0, 0); return false; } }
+    if (S.step !== back) { S.step = back; render(); }
+    return true;
+  }
+  function validStep() { var bad = false; form.querySelectorAll('.form-card .fld').forEach(function (f) { var e = f.querySelector('.ferr'); if (!e) return; var ls = f.querySelectorAll('.in[data-l]'); if (ls.length) { var none = [].every.call(ls, function (x) { return !x.value.trim(); }); ls[0].classList.toggle('bad', none); e.hidden = !none; if (none) bad = true; return; } var i = f.querySelector('.in[data-k]'); if (!i || f.querySelector('.money')) return; var v = String(i.value).trim(), b = !v; if (!b && i.dataset.k === 'applyVal') b = S.apply === 'link' ? !/^(https?:\/\/)?[^\s.]+\.[^\s]+$/.test(v) : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); i.classList.toggle('bad', b); e.hidden = !b; if (b) bad = true; }); var pe = document.getElementById('payErr'); if (pe) { var lo = num(S.payFrom), hi = num(S.payTo), wrong = lo > 0 && hi > 0 && lo > hi; pe.hidden = !wrong; form.querySelectorAll('[data-k="payFrom"],[data-k="payTo"]').forEach(function (x) { x.classList.toggle('bad', wrong); }); if (wrong) bad = true; } if (bad) { var x = form.querySelector('.in.bad'); if (x) x.focus(); return false; } return true; }
   document.addEventListener('click', function (e) {
     var c = e.target.closest('.chip');
     if (c) { S[c.dataset.k] = c.dataset.v; render(); return; }
     var ad = e.target.closest('[data-add]');
     if (ad) { var ka = ad.dataset.add; S[ka].push(''); render(); var ins = form.querySelectorAll('[data-l="' + ka + '"]'); ins[ins.length - 1].focus(); return; }
     var rm = e.target.closest('[data-rm]');
-    if (rm) { S[rm.dataset.rm].splice(+rm.dataset.i, 1); render(); return; }
+    if (rm) { S[rm.dataset.rm].splice(+rm.dataset.i, 1); S.flagged = riskyText(); render(); return; }
     var g = e.target.closest('[data-go]');
-    if (g && !g.disabled) { go(+g.dataset.go); return; }
+    if (g && !g.disabled) { var to = +g.dataset.go; if (to > S.step) { if (passAll(S.step, to)) go(to); } else go(to); return; }
     var id = e.target.closest('button') && e.target.closest('button').id;
     if (id === 'loginBtn') {
       var ok = S.codeSent ? S.code.replace(/\D/g, '').length >= 4 : /.+@.+\..+/.test(S.email);
@@ -146,7 +154,7 @@
       S.err = false;
       if (!S.codeSent) { S.codeSent = true; renderLogin(); } else { var isNamaa = S.email.trim().toLowerCase() === 'hr@namaa.org.sa'; try { if (isNamaa) sessionStorage.setItem('jam_org', 'جمعية نماء الأهلية'); else sessionStorage.removeItem('jam_org'); } catch (e) {} location.href = isNamaa ? 'org.html' : 'org-setup.html'; }
     }
-    if (id === 'next') { var bad = false; form.querySelectorAll('.form-card .fld').forEach(function (f) { var e = f.querySelector('.ferr'); if (!e) return; var ls = f.querySelectorAll('.in[data-l]'); if (ls.length) { var none = [].every.call(ls, function (x) { return !x.value.trim(); }); ls[0].classList.toggle('bad', none); e.hidden = !none; if (none) bad = true; return; } var i = f.querySelector('.in[data-k]'); if (!i) return; var v = String(i.value).trim(), b = !v; if (!b && i.dataset.k === 'applyVal') b = S.apply === 'link' ? !/^(https?:\/\/)?[^\s.]+\.[^\s]+$/.test(v) : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); i.classList.toggle('bad', b); e.hidden = !b; if (b) bad = true; }); var pe = document.getElementById('payErr'); if (pe) { var lo = +String(S.payFrom).replace(/\D/g, ''), hi = +String(S.payTo).replace(/\D/g, ''), wrong = lo > 0 && hi > 0 && lo > hi; pe.hidden = !wrong; form.querySelectorAll('[data-k="payFrom"],[data-k="payTo"]').forEach(function (x) { x.classList.toggle('bad', wrong); }); if (wrong) bad = true; } if (bad) { var x = form.querySelector('.in.bad'); if (x) x.focus(); return; } go(S.step + 1); }
+    if (id === 'next') { if (S.step === 5 ? passAll(3, 6) : validStep()) go(S.step + 1); }
     if (id === 'back') go(S.step - 1);
     if (id === 'again') { S.title = ''; S.cat = ''; S.city = ''; S.payFrom = S.payTo = ''; S.applyVal = ''; S.about = ''; S.tasks = ['', '']; S.reqs = ['', '']; S.perks = ['', '']; S.flagged = false; go(3); }
   });
