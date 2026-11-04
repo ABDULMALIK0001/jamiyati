@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الأدمن — جمعيتي</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="assets/style.css?v=25">
+<style>
+.adm{max-width:1088px;margin:0 auto;padding:40px 0 96px;display:flex;flex-direction:column;gap:20px}
+.adm-hd h1{font-size:32px}
+.adm-hd p{font-size:14px;color:var(--muted);margin-top:4px}
+.box{background:#fff;border-radius:24px;box-shadow:var(--shadow);padding:24px 28px}
+.box>h2{font-size:20px}
+.box>.bsub{font-size:14px;color:var(--muted);margin-top:4px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.kpi{background:#fff;border-radius:20px;box-shadow:var(--shadow);padding:20px 22px;display:flex;flex-direction:column;gap:6px}
+.kpi span{font-size:14px;color:var(--muted)}
+.kpi b{font-size:32px;font-weight:700;line-height:1.2}
+.kpi.hot{background:var(--vol-bg)}
+.kpi.hot span{color:var(--vol-fg)}
+.prow{display:flex;align-items:center;gap:16px;padding:18px 0;border-top:1px solid #F0F0F0}
+.plist{margin-top:8px}
+.plist .prow:first-child{border-top:0}
+.prow .pm{flex:1;min-width:0}
+.prow h3{font-size:18px;font-weight:700}
+.prow .sub{font-size:14px;color:var(--muted);margin-top:4px}
+.prow .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.tag{display:inline-flex;align-items:center;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:500;background:var(--soft);color:var(--muted)}
+.tag.new{background:var(--vol-bg);color:var(--vol-fg)}
+.tag.mail{background:#F9E9E1;color:var(--warn)}
+.prow .btn{height:40px;padding:0 20px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.bars{list-style:none;margin:16px 0 4px;padding:0;display:flex;flex-direction:column;gap:12px}
+.bars li{display:grid;grid-template-columns:110px 1fr 28px;align-items:center;gap:12px;font-size:14px}
+.bars .tr{height:12px;background:var(--soft);border-radius:4px;overflow:hidden}
+.bars .tr,.bars .fl{display:block}
+.bars .fl{height:100%;background:var(--brand);border-radius:4px}
+.bars b{font-size:15px;font-weight:500;text-align:left}
+.orgt{width:100%;border-collapse:collapse;margin-top:12px;font-size:15px}
+.orgt th{font-size:13px;font-weight:500;color:var(--muted);text-align:right;padding:10px 0;border-bottom:1px solid var(--line)}
+.orgt td{padding:14px 0;border-bottom:1px solid #F0F0F0}
+.orgt tr:last-child td{border-bottom:0}
+.orgt .n{text-align:left;font-weight:500}
+.orgt th.n{text-align:left}
+.orgt .nm{font-weight:500}
+.empty-p{padding:24px 0 12px;color:var(--muted);font-size:15px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:40;background:var(--ink);color:#fff;border-radius:999px;padding:12px 22px;font-size:14px;font-weight:500;box-shadow:0 12px 28px rgba(0,0,0,.2);white-space:nowrap}
+/* صفحة المراجعة */
+.rv{max-width:760px;margin:0 auto;padding:32px 0 40px;display:flex;flex-direction:column;gap:20px}
+.rv .back{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:var(--muted);text-decoration:none;background:none;border:0;font-family:inherit;cursor:pointer;padding:0;align-self:flex-start}
+.rv h1{font-size:28px}
+.kv{display:grid;grid-template-columns:140px 1fr;gap:12px 16px;margin-top:16px;font-size:15px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-weight:500}
+.kv .w{color:var(--warn);font-weight:400;font-size:14px;display:block;margin-top:2px}
+.box .btn-ghost.ext{margin-top:18px}
+.opd h2{font-size:22px}
+.opd .meta2{font-size:14px;color:var(--muted);margin-top:6px}
+.opd h3{font-size:16px;font-weight:700;margin-top:20px}
+.opd p,.opd li{font-size:16px;line-height:1.9}
+.opd p{margin-top:6px}
+.opd ul{margin:6px 0 0;padding-right:20px}
+.opd .lnkv{direction:ltr;text-align:right;display:block;font-size:15px;margin-top:6px;word-break:break-all}
+.dbar{position:sticky;bottom:0;margin:0 -48px;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+.dbar-in{max-width:760px;margin:0 auto;padding:14px 0;display:flex;gap:12px}
+.dbar .btn{height:48px;flex:1;max-width:220px}
+.rsn{display:flex;flex-direction:column;gap:8px}
+.rsn label{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:15px;cursor:pointer}
+.rsn label:has(input:checked){border-color:var(--brand);background:var(--brand-tint)}
+.rsn input{accent-color:var(--brand);width:18px;height:18px;margin:0}
+#rejDlg .dlg{max-width:460px}
+#rejDlg .ferr{margin-top:-8px}
+@media (max-width:900px){.kpis{grid-template-columns:1fr 1fr;gap:12px}.two{grid-template-columns:1fr}}
+@media (max-width:720px){
+  .adm{padding:24px 0 72px;gap:14px}.adm-hd h1{font-size:28px}
+  .box{padding:20px;border-radius:20px}
+  .kpi{padding:16px;border-radius:18px}.kpi b{font-size:26px}
+  .prow{flex-direction:column;align-items:stretch;gap:12px}.prow .btn{width:100%;height:44px}
+  .bars li{grid-template-columns:88px 1fr 24px}
+  .orgt thead{display:none}.orgt tr{display:flex;flex-wrap:wrap;justify-content:space-between;padding:14px 0;border-bottom:1px solid #F0F0F0}
+  .orgt tr:last-child{border-bottom:0}.orgt td{padding:0;border:0}
+  .orgt td.c{order:3;width:100%;font-size:14px;color:var(--muted);margin-top:4px}
+  .orgt td.n::after{content:" فرص منشورة";font-weight:400;font-size:14px;color:var(--muted)}
+  .rv{padding:20px 0 32px}.rv h1{font-size:24px}
+  .kv{grid-template-columns:1fr;gap:2px}.kv dd{margin-bottom:10px}
+  .box .btn-ghost.ext{width:100%}
+  .dbar{margin:0 -16px}.dbar-in{padding:12px 16px}.dbar .btn{max-width:none}
+}
+</style>
+</head>
+<body>
+<div class="frame">
+  <div class="demo-bar" role="note">نسخة تجريبية للعرض · الجمعيات والفرص المعروضة أمثلة</div>
+  <header class="hd">
+    <div class="hd-in">
+      <a class="brand" href="admin.html"><img src="assets/logo.svg" alt="" aria-hidden="true"><b>جمعيتي</b><span class="beta">الأدمن</span></a>
+      <div class="hd-actions"><a class="btn btn-ghost" href="index.html">خروج</a></div>
+    </div>
+  </header>
+  <main class="wrap"><div id="app"></div></main>
+</div>
+<div class="ov" id="rejDlg" hidden><div class="dlg" role="dialog" aria-modal="true" aria-labelledby="rejT">
+  <h2 id="rejT">رفض الفرصة</h2>
+  <p>اختر السبب، وسيظهر للجمعية في صفحتها</p>
+  <div class="rsn" id="rsn" role="radiogroup" aria-label="سبب الرفض"></div>
+  <span class="ferr" id="rejErr" hidden>اختر سبب الرفض</span>
+  <div class="btns"><button type="button" class="btn btn-danger" id="rejOk">تأكيد الرفض</button><button type="button" class="btn btn-ghost" data-close>رجوع</button></div>
+</div></div>
+<script src="assets/data.js"></script>
+<script src="assets/app.js?v=7"></script>
+<script>
+(function(){
+  var E=window.esc;
+  var REASONS=['رابط التقديم لا يعمل','الجمعية غير موجودة في دليل الكيانات','الفرصة تطلب رسومًا من المتقدم','معلومات الفرصة ناقصة أو غير واضحة'];
+  var PENDING=[
+    {id:'p1',t:'مساعد/ة إداري/ة',type:'دوام جزئي',cat:'إداري',city:'مكة المكرمة',mode:'حضوري',pay:'4,000 ريال شهريًا',
+     org:'جمعية نماء الأهلية',lic:'1187',mail:'hr@namaa.org.sa',isNew:false,when:'منذ ساعتين',
+     about:'متابعة المراسلات وتنظيم ملفات المستفيدين ومواعيد الاجتماعات في مقر الجمعية.',
+     tasks:['استقبال المراسلات وتوزيعها','تحديث ملفات المستفيدين','تنسيق مواعيد الاجتماعات'],
+     reqs:['دبلوم أو بكالوريوس في الإدارة','إتقان Excel'],perks:['دوام صباحي 5 ساعات'],apply:'https://namaa.org.sa/jobs/admin'},
+    {id:'p2',t:'معلم/ة قرآن متطوع',type:'تطوعية',cat:'تعليمي',city:'جدة',mode:'حضوري',pay:'شهادة تطوع',
+     org:'جمعية سَنَد لرعاية الأيتام',lic:'4520',mail:'sanad.jed@gmail.com',isNew:true,when:'منذ 5 ساعات',
+     about:'حلقات تحفيظ أسبوعية لأبناء الأسر المستفيدة في مقر الجمعية بحي الصفا.',
+     tasks:['إدارة حلقة من 10 طلاب','متابعة الحفظ والمراجعة'],
+     reqs:['حفظ 10 أجزاء على الأقل','التزام يومين في الأسبوع'],perks:['شهادة تطوع موثقة'],apply:'sanad.jed@gmail.com'},
+    {id:'p3',t:'منسق/ة إعلامي/ة',type:'مؤقتة',cat:'تسويق وإعلام',city:'جدة',mode:'هجين',pay:'',
+     org:'جمعية سَنَد لرعاية الأيتام',lic:'4520',mail:'sanad.jed@gmail.com',isNew:true,when:'منذ 5 ساعات',
+     about:'إدارة حسابات الجمعية خلال حملة رمضان لمدة 3 أشهر.',
+     tasks:['كتابة المحتوى وجدولته','تغطية الفعاليات بالصور'],
+     reqs:['خبرة سنة في إدارة الحسابات'],perks:[],apply:'https://forms.gle/sanad-media'}
+  ];
+  var ORGS=[
+    {n:'جمعية نماء الأهلية',c:'مكة المكرمة',v:true},{n:'جمعية رِفد للرعاية الصحية',c:'جدة',v:true},
+    {n:'جمعية بُنيان للإسكان التنموي',c:'جدة',v:true},{n:'جمعية أثر للعمل التطوعي',c:'مكة المكرمة',v:true},
+    {n:'جمعية سَنَد لرعاية الأيتام',c:'جدة',v:false}
+  ];
+  var LIVE=JOBS.slice(), NEWMONTH=10;
+  var $=function(id){return document.getElementById(id);}, app=$('app'), cur=null, pick=null;
+
+  function groupBy(k,order){
+    var m={}; LIVE.forEach(function(j){m[j[k]]=(m[j[k]]||0)+1;});
+    var keys=order.filter(function(x){return m[x];}).concat(Object.keys(m).filter(function(x){return order.indexOf(x)<0;}));
+    keys.sort(function(a,b){return m[b]-m[a];});
+    var mx=Math.max.apply(null,keys.map(function(x){return m[x];}));
+    return '<ul class="bars">'+keys.map(function(x){return '<li title="'+E(x)+': '+m[x]+'"><span>'+E(x)+'</span><span class="tr"><span class="fl" style="width:'+(m[x]/mx*100)+'%"></span></span><b>'+m[x]+'</b></li>';}).join('')+'</ul>';
+  }
+  function liveCount(name){return LIVE.filter(function(j){return j.org===name;}).length;}
+
+  function dash(){
+    cur=null; window.scrollTo(0,0);
+    var h='<div class="adm"><div class="adm-hd"><h1>نظرة عامة</h1><p>آخر 30 يومًا</p></div>';
+    h+='<div class="kpis">'+
+      '<div class="kpi'+(PENDING.length?' hot':'')+'"><span>تنتظر المراجعة</span><b>'+PENDING.length+'</b></div>'+
+      '<div class="kpi"><span>الفرص المنشورة</span><b>'+LIVE.length+'</b></div>'+
+      '<div class="kpi"><span>الجمعيات</span><b>'+ORGS.length+'</b></div>'+
+      '<div class="kpi"><span>فرص جديدة هذا الشهر</span><b>'+NEWMONTH+'</b></div></div>';
+    h+='<section class="box"><h2>تنتظر المراجعة</h2>';
+    if(!PENDING.length) h+='<p class="empty-p">لا توجد فرص تنتظر المراجعة</p>';
+    else h+='<div class="plist">'+PENDING.map(function(p){
+      return '<article class="prow"><div class="pm"><h3>'+E(p.t)+'</h3><p class="sub">'+E(p.org)+' · '+E(p.type)+' · '+E(p.city)+' · '+E(p.when)+'</p>'+
+        (p.isNew?'<div class="tags"><span class="tag new">جمعية جديدة</span>'+(/gmail|hotmail|outlook|yahoo/i.test(p.mail)?'<span class="tag mail">بريد شخصي</span>':'')+'</div>':'')+
+        '</div><button type="button" class="btn btn-ghost" data-rev="'+p.id+'">مراجعة</button></article>';
+    }).join('')+'</div>';
+    h+='</section>';
+    h+='<div class="two"><section class="box"><h2>الفرص حسب النوع</h2><p class="bsub">الفرص المنشورة الآن</p>'+groupBy('type',['دائمة','مؤقتة','دوام جزئي','تطوعية'])+'</section>'+
+      '<section class="box"><h2>الفرص حسب التصنيف</h2><p class="bsub">الفرص المنشورة الآن</p>'+groupBy('cat',[])+'</section></div>';
+    h+='<section class="box"><h2>الجمعيات</h2><table class="orgt"><thead><tr><th>الجمعية</th><th>المدينة</th><th>الحالة</th><th class="n">فرص منشورة</th></tr></thead><tbody>'+
+      ORGS.slice().sort(function(a,b){return liveCount(b.n)-liveCount(a.n);}).map(function(o){
+        return '<tr><td class="nm">'+E(o.n)+'</td><td class="c">'+E(o.c)+'</td><td><span class="vbadge '+(o.v?'ok':'wait')+'">'+(o.v?'موثقة':'تحت المراجعة')+'</span></td><td class="n">'+liveCount(o.n)+'</td></tr>';
+      }).join('')+'</tbody></table></section></div>';
+    app.innerHTML=h;
+  }
+
+  function review(id){
+    var p=PENDING.filter(function(x){return x.id===id;})[0]; if(!p){dash();return;}
+    cur=p; window.scrollTo(0,0);
+    var personal=/gmail|hotmail|outlook|yahoo/i.test(p.mail), isMail=p.apply.indexOf('@')>0;
+    var list=function(a){return '<ul>'+a.map(function(x){return '<li>'+E(x)+'</li>';}).join('')+'</ul>';};
+    var h='<div class="rv"><button type="button" class="back" data-home><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>نظرة عامة</button>'+
+      '<h1>مراجعة فرصة</h1>';
+    h+='<section class="box"><h2>بيانات الجمعية</h2>'+(p.isNew?'<p class="bsub">جمعية جديدة: تُراجع بياناتها مع هذه الفرصة</p>':'')+
+      '<dl class="kv"><dt>اسم الجمعية</dt><dd>'+E(p.org)+'</dd><dt>رقم الترخيص</dt><dd>'+E(p.lic)+'</dd>'+
+      '<dt>البريد</dt><dd><span class="ltr">'+E(p.mail)+'</span>'+(personal?'<span class="w">بريد شخصي: اتصل على رقم الجمعية الرسمي من الدليل للتأكد</span>':'')+'</dd>'+
+      '<dt>الحالة</dt><dd><span class="vbadge '+(p.isNew?'wait':'ok')+'">'+(p.isNew?'تحت المراجعة':'موثقة')+'</span></dd></dl>'+
+      (p.isNew?'<a class="btn btn-ghost ext" href="https://es.ncnp.gov.sa/v5/nonprofits" target="_blank" rel="noopener">افتح في دليل الكيانات <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 17L7 7M7 7h9M7 7v9"/></svg></a>':'')+'</section>';
+    h+='<section class="box opd"><h2>'+E(p.t)+'</h2><p class="meta2">'+[p.type,p.cat,p.city,p.mode].map(E).join(' · ')+(p.pay?' · '+E(p.pay):'')+'</p>'+
+      '<h3>عن الفرصة</h3><p>'+E(p.about)+'</p><h3>المهام</h3>'+list(p.tasks)+'<h3>المتطلبات</h3>'+list(p.reqs)+
+      (p.perks.length?'<h3>المزايا</h3>'+list(p.perks):'')+
+      '<h3>طريقة التقديم</h3><a class="lnkv" href="'+(isMail?'mailto:':'')+E(p.apply)+'" target="_blank" rel="noopener">'+E(p.apply)+'</a></section></div>';
+    h+='<div class="dbar"><div class="dbar-in"><button type="button" class="btn" id="accept">قبول ونشر</button><button type="button" class="btn btn-ghost" id="reject">رفض</button></div></div>';
+    app.innerHTML=h;
+  }
+
+  function toast(m){var t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove();},2600);}
+  function done(msg){
+    PENDING=PENDING.filter(function(x){return x!==cur;});
+    history.replaceState(null,'','admin.html'); dash(); toast(msg);
+  }
+  $('rsn').innerHTML=REASONS.map(function(r,i){return '<label><input type="radio" name="rsn" value="'+i+'">'+r+'</label>';}).join('');
+  document.addEventListener('click',function(e){
+    var r=e.target.closest('[data-rev]'); if(r){history.pushState(null,'','admin.html?r='+r.dataset.rev); review(r.dataset.rev); return;}
+    if(e.target.closest('[data-home]')){history.pushState(null,'','admin.html'); dash(); return;}
+    if(e.target.id==='accept'){
+      var p=cur; LIVE.unshift({org:p.org,type:p.type,cat:p.cat});
+      if(p.isNew){ORGS.forEach(function(o){if(o.n===p.org)o.v=true;}); PENDING.forEach(function(x){if(x.org===p.org)x.isNew=false;});}
+      done('نُشرت الفرصة'); return;
+    }
+    if(e.target.id==='reject'){pick=null; document.querySelectorAll('#rsn input').forEach(function(i){i.checked=false;}); $('rejErr').hidden=true; $('rejDlg').hidden=false; return;}
+    if(e.target.id==='rejOk'){var c=document.querySelector('#rsn input:checked'); if(!c){$('rejErr').hidden=false; return;} $('rejDlg').hidden=true; done('رُفضت الفرصة وأُبلغت الجمعية'); return;}
+    if(e.target.closest('[data-close]')||e.target.classList.contains('ov')) $('rejDlg').hidden=true;
+  });
+  document.addEventListener('change',function(e){if(e.target.name==='rsn') $('rejErr').hidden=true;});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape') $('rejDlg').hidden=true;});
+  window.addEventListener('popstate',function(){var id=new URLSearchParams(location.search).get('r'); id?review(id):dash();});
+  var q=new URLSearchParams(location.search);
+  q.get('r')?review(q.get('r')):dash();
+  if(q.get('d')==='rej'&&cur){$('rejDlg').hidden=false;}
+})();
+</script>
+</body>
+</html>
