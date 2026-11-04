@@ -501,3 +501,9 @@ select.in option{color:var(--ink)}
 .mail{font-size:18px;font-weight:700;color:var(--brand);text-underline-offset:4px;unicode-bidi:isolate}
 .mailrow .btn{height:40px;padding:0 18px}
 @media (max-width:720px){.docs{padding:24px 0 8px}.doc{padding:20px;border-radius:20px}}
+
+/* صفحة نص واحدة: العناوين داخل نفس الكرت */
+.doc h2{margin-top:28px}
+.doc h1+.lead{margin-top:12px}
+.doc .mailrow{margin-top:12px}
+.doc p .mail{font-size:inherit}
