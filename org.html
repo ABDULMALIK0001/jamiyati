@@ -57,15 +57,15 @@
   <div class="btns"><button type="button" class="btn btn-danger" data-close>تأكيد الإيقاف</button><button type="button" class="btn btn-ghost" data-close>رجوع</button></div>
 </div></div>
 <script src="assets/data.js"></script>
-<script src="assets/app.js?v=6"></script>
+<script src="assets/app.js?v=7"></script>
 <script>
 (function(){
   var q=new URLSearchParams(location.search), isNew=q.get('s')==='new';
-  var ST={tab:'all', name:isNew?'جمعية أثر للعمل التطوعي':'جمعية نماء الأهلية', about:isNew?'':'جمعية أهلية تعمل في تنمية الأسر وتمكين الشباب في أحياء مكة',
+  var ST={tab:'all', name:isNew?(function(){try{return sessionStorage.getItem('jam_org')||'جمعية أثر للعمل التطوعي';}catch(e){return 'جمعية أثر للعمل التطوعي';}})():'جمعية نماء الأهلية', about:isNew?'':'جمعية أهلية تعمل في تنمية الأسر وتمكين الشباب في أحياء مكة',
     logo:isNew?'':'<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#F3E6CF"/><path d="M24 36c-7-4-11-8.5-11-14a6 6 0 0 1 11-3.3A6 6 0 0 1 35 22c0 5.5-4 10-11 14z" fill="#C8742A"/><path d="M24 30v-9" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>', city:'مكة المكرمة', verified:!isNew};
   var OPPS=isNew?[]:[
     {id:'j1',t:'منسق/ة برامج مجتمعية',type:'دائمة',cat:'اجتماعي',city:'مكة المكرمة',st:'live',lab:'منشورة',due:'تنتهي بعد 26 يومًا'},
-    {t:'منظِّم/ة فعاليات رمضانية',type:'تطوعية',cat:'اجتماعي',city:'مكة المكرمة',st:'wait',lab:'تحت المراجعة',due:'نراجعها خلال يوم عمل'},
+    {t:'مساعد/ة إداري/ة',type:'دوام جزئي',cat:'إداري',city:'مكة المكرمة',st:'wait',lab:'تحت المراجعة',due:'نراجعها خلال يوم عمل'},
     {t:'محاسب/ة',type:'دوام جزئي',cat:'مالي ومحاسبي',city:'جدة',st:'no',lab:'مرفوضة',why:'رابط التقديم لا يعمل'},
     {t:'أخصائي/ة اجتماعي/ة',type:'مؤقتة',cat:'اجتماعي',city:'مكة المكرمة',st:'end',lab:'منتهية',due:'انتهت 12 أكتوبر'}
   ];
@@ -113,8 +113,8 @@
   function setLogo(file){
     showErr('');
     if(!file) return;
-    if(['image/png','image/jpeg'].indexOf(file.type)<0){showErr('الملف لازم يكون صورة PNG أو JPG'); inp.value=''; return;}
-    if(file.size>2*1024*1024){showErr('حجم الصورة لازم يكون أقل من 2 ميجا'); inp.value=''; return;}
+    if(['image/png','image/jpeg'].indexOf(file.type)<0){showErr('اختر صورة PNG أو JPG'); inp.value=''; return;}
+    if(file.size>2*1024*1024){showErr('اختر صورة أصغر من 2 ميجا'); inp.value=''; return;}
     if(logoURL) URL.revokeObjectURL(logoURL);
     logoURL=URL.createObjectURL(file);
     $('logoPrev').src=logoURL; $('logoName').textContent=file.name;
