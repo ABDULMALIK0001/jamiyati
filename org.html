@@ -137,13 +137,9 @@
   $('saveAdd').addEventListener('click',function(){
     if(bio.value.length>MAX){fitBio(); bio.focus(); return;}
     var txt=bio.value.trim();
-    var sb=$('saveAdd'); sb.classList.add('is-loading'); sb.setAttribute('aria-busy','true');
-    setTimeout(function(){
-      sb.classList.remove('is-loading'); sb.removeAttribute('aria-busy');
-      if(logoURL){ST.logo='<img src="'+logoURL+'" alt="">';}
-      if(txt){ST.about=txt;}
-      render(); closeAll();
-    },600);
+    if(logoURL){ST.logo='<img src="'+logoURL+'" alt="">';}
+    if(txt){ST.about=txt;}
+    render(); closeAll();
   });
   document.addEventListener('click',function(e){
     var o=e.target.closest('[data-open]'); if(o){closeMenus(); $(o.dataset.open).hidden=false; if(o.dataset.open==='addDlg') fitBio(); return;}
