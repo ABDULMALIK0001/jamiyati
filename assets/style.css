@@ -456,3 +456,10 @@ textarea.in{height:auto;padding:14px 16px;line-height:1.7;resize:vertical}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.btn,.btn:active{transition:none;transform:none!important}.btn.is-loading::after{animation-duration:1.6s}}
 .btn-ghost.is-loading::after{border-color:rgba(26,26,26,.2);border-top-color:#1A1A1A}
+
+/* التبويب المختار بلون الهوية (الرئيسية وصفحة الجمعية) */
+.tab[aria-selected="true"]::after,.otab[aria-selected="true"]::after{background:var(--brand);height:3px;bottom:-1px}
+.otab[aria-selected="true"] .c{background:var(--brand-tint);color:var(--brand);font-weight:700}
+.tab:not([aria-selected="true"]):hover,.otab:not([aria-selected="true"]):hover{color:var(--ink)}
+.tab:not([aria-selected="true"]):hover::after,.otab:not([aria-selected="true"]):hover::after{content:"";position:absolute;right:0;left:0;bottom:-1px;height:2px;background:var(--line);border-radius:2px}
+.tab:focus-visible{outline:3px solid rgba(23,83,63,.45);outline-offset:2px}
