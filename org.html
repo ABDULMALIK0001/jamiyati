@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
-<link rel="stylesheet" href="assets/style.css?v=15">
+<link rel="stylesheet" href="assets/style.css?v=16">
 </head>
 <body>
 <div class="frame">
@@ -36,9 +36,23 @@
 </div>
 <div class="ov" id="addDlg" hidden><div class="dlg" role="dialog" aria-modal="true" aria-labelledby="addT">
   <h2 id="addT">شعار الجمعية ونبذتها</h2>
-  <div class="up"><span class="sq"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#545454" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg></span><span><b>ارفع الشعار</b>PNG أو JPG، مربع يفضّل</span></div>
-  <label class="lbl">نبذة قصيرة<textarea class="in" rows="3" placeholder="مثلًا: جمعية أهلية في مكة تعمل في تنمية الأسر منذ 2012"></textarea></label>
-  <div class="btns"><button type="button" class="btn" data-close>احفظ</button><button type="button" class="btn btn-ghost" data-close>رجوع</button></div>
+  <div class="fld2">
+    <span class="lbl" id="logoLbl">الشعار</span>
+    <label class="drop" id="drop" for="logoIn">
+      <input type="file" id="logoIn" class="sr" accept="image/png,image/jpeg" aria-labelledby="logoLbl" aria-describedby="logoHint logoErr">
+      <span class="drop-empty" id="dropEmpty"><span class="sq"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg></span><span><b>اختر صورة الشعار</b><span id="logoHint">أو اسحبها هنا · PNG أو JPG، حتى 2 ميجا</span></span></span>
+      <span class="drop-full" id="dropFull" hidden><span class="logo-prev"><img id="logoPrev" alt="معاينة الشعار"></span><span class="fname" id="logoName"></span></span>
+    </label>
+    <div class="logo-acts" id="logoActs" hidden><button type="button" class="lnk" id="logoChange">تغيير</button><button type="button" class="lnk" id="logoRemove">حذف</button></div>
+    <span class="ferr" id="logoErr" hidden></span>
+  </div>
+  <div class="fld2">
+    <label class="lbl" for="orgBio">نبذة قصيرة</label>
+    <span class="hint2" id="bioHint">جملة أو جملتين عن الجمعية ومجال عملها</span>
+    <textarea class="in" id="orgBio" rows="3" aria-describedby="bioHint bioCount" placeholder="مثلًا: جمعية تعمل على ترميم وتأهيل منازل الأسر المحتاجة"></textarea>
+    <span class="bio-count" id="bioCount" aria-live="polite"></span>
+  </div>
+  <div class="btns"><button type="button" class="btn" id="saveAdd">احفظ</button><button type="button" class="btn btn-ghost" data-close>رجوع</button></div>
 </div></div>
 <div class="ov" id="stopDlg" hidden><div class="dlg" role="alertdialog" aria-modal="true" aria-labelledby="stopT">
   <h2 id="stopT">إيقاف الفرصة؟</h2>
@@ -51,7 +65,7 @@
 (function(){
   var q=new URLSearchParams(location.search), isNew=q.get('s')==='new';
   var name=isNew?'جمعية أثر للعمل التطوعي':'جمعية نماء الأهلية';
-  var about=isNew?'':'جمعية أهلية تعمل في تنمية الأسر وتمكين الشباب منذ 2012';
+  var about=isNew?'':'جمعية أهلية تعمل في تنمية الأسر وتمكين الشباب';
   var LOGO='<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="#F3E6CF"/><path d="M24 36c-7-4-11-8.5-11-14a6 6 0 0 1 11-3.3A6 6 0 0 1 35 22c0 5.5-4 10-11 14z" fill="#C8742A"/><path d="M24 30v-9" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>';
   var OPPS=[
     {t:'منسق/ة برامج مجتمعية',type:'دائمة',cat:'اجتماعي',city:'مكة المكرمة',st:'live',lab:'منشورة',due:'تنتهي بعد 26 يومًا'},
@@ -59,8 +73,7 @@
     {t:'محاسب/ة',type:'دوام جزئي',cat:'مالي ومحاسبي',city:'جدة',st:'no',lab:'مرفوضة',due:'',why:'رابط التقديم لا يعمل'},
     {t:'أخصائي/ة اجتماعي/ة',type:'مؤقتة',cat:'اجتماعي',city:'مكة المكرمة',st:'end',lab:'منتهية',due:'انتهت 12 أكتوبر'}
   ];
-  var h='<p class="demo-sw">للعرض: <a href="org.html?s=new"'+(isNew?' aria-current="page"':'')+'>جمعية جديدة</a> · <a href="org.html"'+(isNew?'':' aria-current="page"')+'>جمعية لديها فرص</a></p>'+
-    '<div class="org-head"><div class="org-id"><span class="org-logo">'+(isNew?name.replace('جمعية ','').charAt(0):LOGO)+'</span><div><h1>'+name+'</h1>'+(about?'<p>'+about+'</p>':'')+'</div></div>'+
+  var h='<div class="org-head"><div class="org-id"><span class="org-logo">'+(isNew?name.replace('جمعية ','').charAt(0):LOGO)+'</span><div><h1>'+name+'</h1>'+(about?'<p>'+about+'</p>':'')+'</div></div>'+
     '<a class="btn btn-lg" href="post.html?f=1">انشر فرصة</a></div>';
   if(isNew) h+='<div class="note"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#545454" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex:none"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>نراجع بيانات جمعيتك خلال يوم عمل، ويمكنك نشر فرصتك الآن</div>'+
     '<div class="tip"><div><b>أضف شعار جمعيتك ونبذة عنها</b><span>لتظهر فرصك بشكل أوضح للباحثين</span></div><button type="button" class="btn btn-ghost" data-open="addDlg">أضف</button></div>'+
@@ -72,13 +85,57 @@
       '<span class="act">'+(o.st==='live'?'<button type="button" class="btn btn-ghost" data-open="stopDlg">إيقاف الفرصة</button>':'')+'</span>'+
       (o.why?'<p class="reason">السبب: '+o.why+'</p>':'')+'</div>';
   }).join('')+'</section>';
-  h+='<p class="foot-note">لتعديل بياناتك أو فرصة منشورة <a href="#">تواصل معنا</a></p>';
+  h+='<p class="foot-note">لتعديل فرصة منشورة أو لأي استفسار، <a href="#">تواصل معنا</a></p>';
   document.getElementById('org').innerHTML=h;
-  document.addEventListener('click',function(e){
-    var o=e.target.closest('[data-open]'); if(o){document.getElementById(o.dataset.open).hidden=false;return;}
-    if(e.target.closest('[data-close]')||e.target.classList.contains('ov')) document.querySelectorAll('.ov').forEach(function(d){d.hidden=true;});
+  var MAX=250, WARN=200, logoURL='';
+  var $=function(id){return document.getElementById(id);};
+  var bio=$('orgBio'), cnt=$('bioCount'), inp=$('logoIn'), drop=$('drop'), err=$('logoErr');
+  function fitBio(){
+    bio.style.height='auto';
+    var hgt=Math.min(Math.max(bio.scrollHeight+2,120),200);
+    bio.style.height=hgt+'px';
+    bio.style.overflowY=bio.scrollHeight>hgt?'auto':'hidden';
+    var n=bio.value.length, over=n>MAX;
+    cnt.textContent=over?('زادت النبذة '+(n-MAX)+' حرفًا عن الحد'):(n>=WARN?('بقي '+(MAX-n)+' حرفًا'):'');
+    cnt.classList.toggle('over',over); bio.classList.toggle('bad',over);
+  }
+  function showErr(m){err.textContent=m; err.hidden=!m;}
+  function setLogo(file){
+    showErr('');
+    if(!file) return;
+    if(['image/png','image/jpeg'].indexOf(file.type)<0){showErr('الملف لازم يكون صورة PNG أو JPG'); inp.value=''; return;}
+    if(file.size>2*1024*1024){showErr('حجم الصورة لازم يكون أقل من 2 ميجا'); inp.value=''; return;}
+    if(logoURL) URL.revokeObjectURL(logoURL);
+    logoURL=URL.createObjectURL(file);
+    $('logoPrev').src=logoURL; $('logoName').textContent=file.name;
+    $('dropEmpty').hidden=true; $('dropFull').hidden=false; $('logoActs').hidden=false; drop.classList.add('has');
+  }
+  function clearLogo(){
+    if(logoURL) URL.revokeObjectURL(logoURL); logoURL=''; inp.value=''; showErr('');
+    $('dropEmpty').hidden=false; $('dropFull').hidden=true; $('logoActs').hidden=true; drop.classList.remove('has');
+  }
+  inp.addEventListener('change',function(){setLogo(inp.files[0]);});
+  ['dragenter','dragover'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('drag');});});
+  ['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('drag');});});
+  drop.addEventListener('drop',function(e){var f=e.dataTransfer&&e.dataTransfer.files[0]; if(f) setLogo(f);});
+  $('logoChange').addEventListener('click',function(){inp.click();});
+  $('logoRemove').addEventListener('click',clearLogo);
+  bio.addEventListener('input',fitBio);
+  function closeAll(){document.querySelectorAll('.ov').forEach(function(d){d.hidden=true;});}
+  $('saveAdd').addEventListener('click',function(){
+    if(bio.value.length>MAX){fitBio(); bio.focus(); return;}
+    var txt=bio.value.trim();
+    if(logoURL) document.querySelector('.org-logo').innerHTML='<img src="'+logoURL+'" alt="">';
+    if(txt){var idw=document.querySelector('.org-id > div'), pp=idw.querySelector('p'); if(!pp){pp=document.createElement('p'); idw.appendChild(pp);} pp.textContent=txt;}
+    if(logoURL&&txt){var tip=document.querySelector('.tip'); if(tip) tip.remove();}
+    closeAll();
   });
-  var d=q.get('d'); if(d) document.getElementById(d).hidden=false;
+  document.addEventListener('click',function(e){
+    var o=e.target.closest('[data-open]'); if(o){$(o.dataset.open).hidden=false; if(o.dataset.open==='addDlg') fitBio(); return;}
+    if(e.target.closest('[data-close]')||e.target.classList.contains('ov')) closeAll();
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape') closeAll();});
+  var d=q.get('d'); if(d&&$(d)){$(d).hidden=false; if(d==='addDlg') fitBio();}
 })();
 </script>
 </body></html>

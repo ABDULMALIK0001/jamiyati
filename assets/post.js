@@ -35,7 +35,7 @@
   function renderLogin() {
     var html = '<div class="login-box"><a class="brand" href="index.html"><img src="assets/logo.svg" alt="" aria-hidden="true"><b>جمعيتي</b></a>' +
       '<h1>ادخل ببريد جمعيتك</h1>';
-    if (!S.codeSent) html += '<input class="in ltr" type="email" autocomplete="email" aria-label="بريد الجمعية" placeholder="hr@namaa.org.sa" data-k="email" value="' + esc(S.email) + '">';
+    if (!S.codeSent) html += '<input class="in ltr" type="email" autocomplete="email" aria-label="بريد الجمعية" placeholder="hr@namaa.org.sa" data-k="email" value="' + esc(S.email) + '">' + '<span class="demo-hint">للتجربة: <b class="ltr">hr@namaa.org.sa</b> جمعية مسجلة، وأي بريد ثاني جمعية جديدة</span>';
     else html += '<input class="in code ltr" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="رمز التحقق" placeholder="000000" data-k="code" value="' + esc(S.code) + '">' +
       '<span class="muted">أرسلنا الرمز إلى ' + esc(S.email) + ' · <b style="color:#1A1A1A;font-weight:500">أعد الإرسال بعد 0:45</b></span><span class="muted" style="font-size:13px">في النسخة التجريبية اكتب أي 4 أرقام</span>';
     if (S.err) html += '<span class="err" role="alert">' + (S.codeSent ? 'أدخل رمز التحقق' : 'أدخل بريدًا إلكترونيًا صحيحًا') + '</span>';
@@ -124,7 +124,7 @@
       var ok = S.codeSent ? S.code.replace(/\D/g, '').length >= 4 : /.+@.+\..+/.test(S.email);
       if (!ok) { S.err = true; renderLogin(); return; }
       S.err = false;
-      if (!S.codeSent) { S.codeSent = true; renderLogin(); } else location.href = 'org-setup.html';
+      if (!S.codeSent) { S.codeSent = true; renderLogin(); } else location.href = S.email.trim().toLowerCase() === 'hr@namaa.org.sa' ? 'org.html' : 'org-setup.html';
     }
     if (id === 'next') { var bad = false; form.querySelectorAll('.form-card .fld').forEach(function (f) { var e = f.querySelector('.ferr'); if (!e) return; var ls = f.querySelectorAll('.in[data-l]'); if (ls.length) { var none = [].every.call(ls, function (x) { return !x.value.trim(); }); ls[0].classList.toggle('bad', none); e.hidden = !none; if (none) bad = true; return; } var i = f.querySelector('.in[data-k]'); if (!i) return; var b = !String(i.value).trim(); i.classList.toggle('bad', b); e.hidden = !b; if (b) bad = true; }); if (bad) { var x = form.querySelector('.in.bad'); if (x) x.focus(); return; } go(S.step + 1); }
     if (id === 'back') go(S.step - 1);
