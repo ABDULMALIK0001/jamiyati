@@ -40,7 +40,8 @@
     if (b) out.push(plural(b, 'ميزة واحدة', 'ميزتان', 'مزايا', 'ميزة'));
     return out.join(' · ') || '—';
   }
-  function pay() { if (S.type === 'تطوعية') return S.perk; var a = S.payFrom.trim(), b = S.payTo.trim(); if (a && b) return a + ' – ' + b + ' ريال'; if (a) return 'من ' + a + ' ريال'; if (b) return 'حتى ' + b + ' ريال'; return ''; }
+  function money(v) { var n = num(v); return n > 0 ? n.toLocaleString('en-US') : ''; }
+  function pay() { if (S.type === 'تطوعية') return S.perk; var a = money(S.payFrom), b = money(S.payTo); if (a && b) return a + ' – ' + b + ' ريال'; if (a) return 'من ' + a + ' ريال'; if (b) return 'حتى ' + b + ' ريال'; return ''; }
 
   function renderLogin() {
     var html = '<div class="login-box"><a class="brand" href="index.html"><img src="assets/logo.svg" alt="" aria-hidden="true"><b>جمعيتي</b></a>' +
@@ -97,7 +98,7 @@
         '<input class="in ltr" data-k="applyVal" value="' + esc(S.applyVal) + '" aria-label="' + (S.apply === 'link' ? 'رابط التقديم' : 'بريد التقديم') + '" placeholder="' + (S.apply === 'link' ? 'https://forms.gle/…' : 'jobs@namaa.org.sa') + '" aria-describedby="applyHint"><span class="hint2" id="applyHint">' + (S.apply === 'link' ? 'تأكد أن النموذج مفتوح للجميع' : 'استخدم بريد الجمعية الرسمي') + '</span><span class="ferr" hidden>' + (S.apply === 'link' ? 'اكتب رابط نموذج التقديم، مثل <bdi dir="ltr">https://forms.gle/…</bdi>' : 'اكتب بريدًا إلكترونيًا صحيحًا للتقديم') + '</span></div>';
     }
     var html;
-    if (s === 6) html = '<div class="form-card"><div class="done"><span class="ok"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><h2>استلمنا فرصتك</h2><p class="muted" style="font-size:16px">نراجعها خلال يوم عمل</p><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:10px"><a class="btn btn-lg" href="org.html">عرض فرصك</a><button type="button" class="btn btn-lg btn-ghost" id="again">انشر فرصة أخرى</button></div></div></div>';
+    if (s === 6) html = '<div class="form-card"><div class="done"><span class="ok"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><h2>استلمنا فرصتك</h2><p class="muted" style="font-size:16px">نراجعها خلال يومي عمل</p><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:10px"><a class="btn btn-lg" href="org.html">عرض فرصك</a><button type="button" class="btn btn-lg btn-ghost" id="again">انشر فرصة أخرى</button></div></div></div>';
     else html = '<h1>انشر فرصة</h1>' + stepper() + '<section class="form-card">' + body +
       '<div class="form-nav"><button type="button" class="link-btn" id="back"' + (s > 3 ? '' : ' style="visibility:hidden"') + '>رجوع</button><button type="button" class="btn btn-lg" id="next">' + (s === 5 ? 'أرسل للمراجعة' : 'التالي') + '</button></div></section>';
     form.querySelector('.form-wrap').innerHTML = html;
@@ -126,6 +127,14 @@
     if (l) { S[l][+e.target.dataset.i] = e.target.value; refreshFlag(e.target); return; }
     var k = e.target.getAttribute && e.target.getAttribute('data-k');
     if (!k) return;
+    if (k === 'payFrom' || k === 'payTo') {
+      // أرقام موجبة فقط: نحوّل الأرقام العربية ونشيل أي حرف أو إشارة سالب
+      var raw = e.target.value, clean = String(raw).replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/[۰-۹]/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d); }).replace(/[.٫]\d{1,2}(?!\d)/g, '').replace(/\D/g, '').replace(/^0+/, '').slice(0, 6);
+      if (clean !== raw) { var cp = Math.max(0, (e.target.selectionStart || 0) - (raw.length - clean.length)); e.target.value = clean; try { e.target.setSelectionRange(cp, cp); } catch (x) {} }
+      S[k] = clean;
+      var pe = document.getElementById('payErr'); if (pe && !pe.hidden) payWrong();
+      return;
+    }
     S[k] = e.target.value;
     if (k === 'about') refreshFlag(e.target);
   });
@@ -137,7 +146,8 @@
     if (S.step !== back) { S.step = back; render(); }
     return true;
   }
-  function validStep() { var bad = false; form.querySelectorAll('.form-card .fld').forEach(function (f) { var e = f.querySelector('.ferr'); if (!e) return; var ls = f.querySelectorAll('.in[data-l]'); if (ls.length) { var none = [].every.call(ls, function (x) { return !x.value.trim(); }); ls[0].classList.toggle('bad', none); e.hidden = !none; if (none) bad = true; return; } var i = f.querySelector('.in[data-k]'); if (!i || f.querySelector('.money')) return; var v = String(i.value).trim(), b = !v; if (!b && i.dataset.k === 'applyVal') b = S.apply === 'link' ? !/^(https?:\/\/)?[^\s.]+\.[^\s]+$/.test(v) : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); i.classList.toggle('bad', b); e.hidden = !b; if (b) bad = true; }); var pe = document.getElementById('payErr'); if (pe) { var lo = num(S.payFrom), hi = num(S.payTo), wrong = lo > 0 && hi > 0 && lo > hi; pe.hidden = !wrong; form.querySelectorAll('[data-k="payFrom"],[data-k="payTo"]').forEach(function (x) { x.classList.toggle('bad', wrong); }); if (wrong) bad = true; } if (bad) { var x = form.querySelector('.in.bad'); if (x) x.focus(); return false; } return true; }
+  function payWrong() { var pe = document.getElementById('payErr'); if (!pe) return false; var lo = num(S.payFrom), hi = num(S.payTo), wrong = lo > 0 && hi > 0 && lo > hi; pe.hidden = !wrong; form.querySelectorAll('[data-k="payFrom"],[data-k="payTo"]').forEach(function (x) { x.classList.toggle('bad', wrong); }); return wrong; }
+  function validStep() { var bad = false; form.querySelectorAll('.form-card .fld').forEach(function (f) { var e = f.querySelector('.ferr'); if (!e) return; var ls = f.querySelectorAll('.in[data-l]'); if (ls.length) { var none = [].every.call(ls, function (x) { return !x.value.trim(); }); ls[0].classList.toggle('bad', none); e.hidden = !none; if (none) bad = true; return; } var i = f.querySelector('.in[data-k]'); if (!i || f.querySelector('.money')) return; var v = String(i.value).trim(), b = !v; if (!b && i.dataset.k === 'applyVal') b = S.apply === 'link' ? !/^(https?:\/\/)?[^\s.]+\.[^\s]+$/.test(v) : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); i.classList.toggle('bad', b); e.hidden = !b; if (b) bad = true; }); if (payWrong()) bad = true; if (bad) { var x = form.querySelector('.in.bad'); if (x) x.focus(); return false; } return true; }
   document.addEventListener('click', function (e) {
     var c = e.target.closest('.chip');
     if (c) { S[c.dataset.k] = c.dataset.v; render(); return; }
@@ -149,12 +159,17 @@
     if (g && !g.disabled) { var to = +g.dataset.go; if (to > S.step) { if (passAll(S.step, to)) go(to); } else go(to); return; }
     var id = e.target.closest('button') && e.target.closest('button').id;
     if (id === 'loginBtn') {
-      var ok = S.codeSent ? S.code.replace(/\D/g, '').length >= 4 : /.+@.+\..+/.test(S.email);
+      var ok = S.codeSent ? String(S.code).replace(/[٠-٩۰-۹\d]/g, 'x').replace(/[^x]/g, '').length >= 4 : /.+@.+\..+/.test(S.email);
       if (!ok) { S.err = true; renderLogin(); return; }
       S.err = false;
       if (!S.codeSent) { S.codeSent = true; renderLogin(); } else { var isNamaa = S.email.trim().toLowerCase() === 'hr@namaa.org.sa'; try { if (isNamaa) sessionStorage.setItem('jam_org', 'جمعية نماء الأهلية'); else sessionStorage.removeItem('jam_org'); } catch (e) {} location.href = isNamaa ? 'org.html' : 'org-setup.html'; }
     }
-    if (id === 'next') { if (S.step === 5 ? passAll(3, 6) : validStep()) go(S.step + 1); }
+    if (id === 'next') {
+      if (S.step === 5 ? passAll(3, 6) : validStep()) {
+        if (S.step === 5 && window.demo) window.demo.add({ id: 'p' + Date.now(), st: 'wait', org: S.org, letter: S.org.replace('جمعية ', '').charAt(0), title: S.title.trim(), type: S.type, cat: S.cat, city: S.city.trim(), mode: S.mode, pay: pay(), posted: 'اليوم', about: S.about.trim(), tasks: S.tasks.filter(function (x) { return x.trim(); }), reqs: S.reqs.filter(function (x) { return x.trim(); }), perks: S.perks.filter(function (x) { return x.trim(); }), apply: S.applyVal.trim() });
+        go(S.step + 1);
+      }
+    }
     if (id === 'back') go(S.step - 1);
     if (id === 'again') { S.title = ''; S.cat = ''; S.city = ''; S.payFrom = S.payTo = ''; S.applyVal = ''; S.about = ''; S.tasks = ['', '']; S.reqs = ['', '']; S.perks = ['', '']; S.flagged = false; go(3); }
   });
@@ -165,7 +180,8 @@
     var parts = txt.split(/\r?\n/).map(function (x) { return x.replace(/^\s*[-•*\d.)]+\s*/, '').trim(); }).filter(Boolean);
     if (parts.length < 2) return;
     e.preventDefault(); var at = +e.target.dataset.i;
-    S[l].splice.apply(S[l], [at, S[l][at] ? 0 : 1].concat(parts)); S[l] = S[l].slice(0, 10); render();
+    S[l].splice.apply(S[l], [at, S[l][at] ? 0 : 1].concat(parts)); S[l] = S[l].slice(0, 10); S.flagged = riskyText(); render();
+    var last = form.querySelector('[data-l="' + l + '"][data-i="' + Math.min(at + parts.length - 1, S[l].length - 1) + '"]'); if (last) last.focus();
   });
   render();
 })();

@@ -8,7 +8,7 @@
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 <link rel="preload" href="assets/fonts/plex-arabic-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/plex-arabic-700.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="assets/style.css?v=29">
+<link rel="stylesheet" href="assets/style.css?v=30">
 <style>
 .adm{max-width:1088px;margin:0 auto;padding:40px 0 96px;display:flex;flex-direction:column;gap:20px}
 .adm-hd h1{font-size:32px}
@@ -130,7 +130,7 @@
   <div class="btns"><button type="button" class="btn btn-danger" id="verNoOk">تأكيد</button><button type="button" class="btn btn-ghost" data-close>رجوع</button></div>
 </div></div>
 <script src="assets/data.js"></script>
-<script src="assets/app.js?v=7"></script>
+<script src="assets/app.js?v=9"></script>
 <script>
 (function(){
   var E=window.esc;
@@ -152,6 +152,10 @@
      tasks:['كتابة المحتوى وجدولته','تغطية الفعاليات بالصور'],
      reqs:['خبرة سنة في إدارة الحسابات'],perks:[],apply:'https://forms.gle/sanad-media'}
   ];
+  window.demo.posted().forEach(function(x){
+    if(x.st!=='wait') return;
+    PENDING.unshift({id:x.id,posted:true,t:x.title,type:x.type,cat:x.cat,city:x.city,mode:x.mode,pay:x.pay,org:x.org,lic:'للتجربة',mail:'تجريبي@نسخة.عرض',isNew:false,when:'الآن',about:x.about,tasks:x.tasks,reqs:x.reqs,perks:x.perks,apply:x.apply||'https://example.org'});
+  });
   var ORGS=[
     {n:'جمعية نماء الأهلية',c:'مكة المكرمة',v:true},{n:'جمعية رِفد للرعاية الصحية',c:'جدة',v:true},
     {n:'جمعية بُنيان للإسكان التنموي',c:'جدة',v:true},{n:'جمعية أثر للعمل التطوعي',c:'مكة المكرمة',v:true},
@@ -216,6 +220,7 @@
 
   function toast(m){var t=document.createElement('div');t.className='toast';t.setAttribute('role','status');t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove();},2600);}
   function done(msg){
+    if(!cur) return;
     PENDING=PENDING.filter(function(x){return x!==cur;});
     history.replaceState(null,'','admin.html'); dash(); toast(msg);
   }
@@ -224,7 +229,7 @@
     var r=e.target.closest('[data-rev]'); if(r){history.pushState(null,'','admin.html?r='+r.dataset.rev); review(r.dataset.rev); return;}
     if(e.target.closest('[data-home]')){history.pushState(null,'','admin.html'); dash(); return;}
     if(e.target.id==='accept'){
-      var p=cur; if(!p||p.isNew) return; LIVE.unshift({org:p.org,type:p.type,cat:p.cat});
+      var p=cur; if(!p||p.isNew) return; LIVE.unshift({org:p.org,type:p.type,cat:p.cat}); if(p.posted) window.demo.update(p.id,{st:'live'});
       done('نُشرت الفرصة'); return;
     }
     if(e.target.id==='verOk'&&cur){ORGS.forEach(function(o){if(o.n===cur.org)o.v=true;}); PENDING.forEach(function(x){if(x.org===cur.org)x.isNew=false;}); review(cur.id); toast('وُثّقت الجمعية'); return;}
@@ -238,7 +243,7 @@
     if(e.target.id==='rejOk'){
       var c=document.querySelector('#rsn input:checked'); if(!c){$('rejErr').hidden=false; return;}
       if(+c.value===OTHER&&!$('rejTxt').value.trim()){$('rejTxtErr').hidden=false; $('rejTxt').classList.add('bad'); $('rejTxt').focus(); return;}
-      $('rejDlg').hidden=true; done('رُفضت الفرصة وأُبلغت الجمعية'); return;
+      if(cur&&cur.posted) window.demo.update(cur.id,{st:'no',why:+c.value===OTHER?$('rejTxt').value.trim():REASONS[+c.value]}); $('rejDlg').hidden=true; done('رُفضت الفرصة وأُبلغت الجمعية'); return;
     }
     if(e.target.closest('[data-close]')||e.target.classList.contains('ov')) closeDlgs();
   });
@@ -254,7 +259,7 @@
     if(e.target.value.trim()){$('rejTxtErr').hidden=true; e.target.classList.remove('bad');}
   });
   document.addEventListener('keydown',function(e){if(e.key==='Escape') closeDlgs();});
-  window.addEventListener('popstate',function(){var id=new URLSearchParams(location.search).get('r'); id?review(id):dash();});
+  window.addEventListener('popstate',function(){closeDlgs(); var id=new URLSearchParams(location.search).get('r'); id?review(id):dash();});
   var q=new URLSearchParams(location.search);
   q.get('r')?review(q.get('r')):dash();
   if(q.get('d')==='rej'&&cur){$('rejDlg').hidden=false;}

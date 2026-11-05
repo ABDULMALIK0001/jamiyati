@@ -566,3 +566,4 @@ svg[stroke-width]{stroke-width:2}
   .hero div.rise,.hero div.rise .btn{width:100%}
   .orgs{border-radius:22px}
 }
+.dlg:focus{outline:none}
