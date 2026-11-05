@@ -2,7 +2,7 @@
   var esc = window.esc;
   var S = {
     step: /[?&]f=1/.test(location.search) ? 3 : 1, reached: 3, codeSent: false, email: '', code: '', err: false,
-    org: (function () { try { return sessionStorage.getItem('jam_org') || 'جمعية نماء الأهلية'; } catch (e) { return 'جمعية نماء الأهلية'; } })(), license: '', hq: 'مكة المكرمة', orgAbout: '',
+    org: (function () { try { return sessionStorage.getItem('jam_org') || 'جمعية لبنة الأهلية'; } catch (e) { return 'جمعية لبنة الأهلية'; } })(), license: '', hq: 'مكة المكرمة', orgAbout: '',
     type: 'دائمة', title: '', cat: '', city: '', mode: 'حضوري',
     payFrom: '', payTo: '', perk: 'شهادة تطوع', deadline: '',
     about: '', tasks: ['', ''], reqs: ['', ''], perks: ['', ''], apply: 'link', applyVal: '', flagged: false
@@ -46,7 +46,7 @@
   function renderLogin() {
     var html = '<div class="login-box"><a class="brand" href="index.html"><img src="assets/logo.svg" alt="" aria-hidden="true"><b>جمعيتي</b></a>' +
       '<h1>ادخل ببريد جمعيتك</h1>';
-    if (!S.codeSent) html += '<input class="in ltr" type="email" autocomplete="email" aria-label="بريد الجمعية" placeholder="hr@namaa.org.sa" data-k="email" value="' + esc(S.email) + '">' + '<span class="demo-hint">للتجربة: <b class="ltr">hr@namaa.org.sa</b> جمعية مسجلة، وأي بريد آخر جمعية جديدة</span>';
+    if (!S.codeSent) html += '<input class="in ltr" type="email" autocomplete="email" aria-label="بريد الجمعية" placeholder="hr@lubna.example" data-k="email" value="' + esc(S.email) + '">' + '<span class="demo-hint">للتجربة: <b class="ltr">hr@lubna.example</b> جمعية مسجلة، وأي بريد آخر جمعية جديدة</span>';
     else html += '<input class="in code ltr" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="رمز التحقق" placeholder="000000" data-k="code" value="' + esc(S.code) + '">' +
       '<span class="muted">أرسلنا الرمز إلى ' + esc(S.email) + ' · <b style="color:#1A1A1A;font-weight:500">أعد الإرسال بعد 0:45</b></span><span class="muted" style="font-size:13px">في النسخة التجريبية اكتب أي 4 أرقام</span>';
     if (S.err) html += '<span class="err" role="alert">' + (S.codeSent ? 'اكتب رمز التحقق' : 'اكتب بريدًا إلكترونيًا صحيحًا') + '</span>';
@@ -71,7 +71,7 @@
   function renderForm() {
     var s = S.step, body = '';
     if (s === 2) body = '<div><h2>بيانات الجمعية</h2><p class="hint">تُعبّأ مرة واحدة</p></div>' +
-      fld('اسم الجمعية', inp('org', 'مثلًا: جمعية نماء الأهلية')) +
+      fld('اسم الجمعية', inp('org', 'مثلًا: جمعية لبنة الأهلية')) +
       '<div class="row2">' + fld('رقم الترخيص', inp('license', '1234', { ltr: 1, attrs: 'inputmode="numeric"' })) + fld('مدينة المقر', inp('hq', 'ابحث عن مدينة...', { attrs: 'type="search"' })) + '</div>' +
       fld('نبذة قصيرة', ta('orgAbout', 'مثلًا: جمعية أهلية في مكة تعمل في تنمية الأسر منذ 2012', 3)) +
       '<div class="fld">الشعار <span class="opt">(اختياري)</span><button type="button" class="upload"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></svg>ارفع الشعار</button></div>';
@@ -95,7 +95,7 @@
       body = '<h2>المراجعة</h2><div class="fld" style="font-weight:400"><span class="muted">هكذا تظهر فرصتك للباحثين</span>' + previewCard() + '</div>' +
         '<div class="review">' + rows.map(function (r) { return '<div class="r"><div><span>' + r[0] + '</span><b>' + esc(r[1]) + '</b></div><button type="button" data-go="' + r[2] + '">تعديل</button></div>'; }).join('') + '</div>' +
         '<div class="fld"><span>طريقة التقديم' + STAR + '</span><div style="max-width:320px">' + chips([['link', 'رابط'], ['mail', 'بريد']], 'apply', 'c2') + '</div>' +
-        '<input class="in ltr" data-k="applyVal" value="' + esc(S.applyVal) + '" aria-label="' + (S.apply === 'link' ? 'رابط التقديم' : 'بريد التقديم') + '" placeholder="' + (S.apply === 'link' ? 'https://forms.gle/…' : 'jobs@namaa.org.sa') + '" aria-describedby="applyHint"><span class="hint2" id="applyHint">' + (S.apply === 'link' ? 'تأكد أن النموذج مفتوح للجميع' : 'استخدم بريد الجمعية الرسمي') + '</span><span class="ferr" hidden>' + (S.apply === 'link' ? 'اكتب رابط نموذج التقديم، مثل <bdi dir="ltr">https://forms.gle/…</bdi>' : 'اكتب بريدًا إلكترونيًا صحيحًا للتقديم') + '</span></div>';
+        '<input class="in ltr" data-k="applyVal" value="' + esc(S.applyVal) + '" aria-label="' + (S.apply === 'link' ? 'رابط التقديم' : 'بريد التقديم') + '" placeholder="' + (S.apply === 'link' ? 'https://forms.gle/…' : 'jobs@lubna.example') + '" aria-describedby="applyHint"><span class="hint2" id="applyHint">' + (S.apply === 'link' ? 'تأكد أن النموذج مفتوح للجميع' : 'استخدم بريد الجمعية الرسمي') + '</span><span class="ferr" hidden>' + (S.apply === 'link' ? 'اكتب رابط نموذج التقديم، مثل <bdi dir="ltr">https://forms.gle/…</bdi>' : 'اكتب بريدًا إلكترونيًا صحيحًا للتقديم') + '</span></div>';
     }
     var html;
     if (s === 6) html = '<div class="form-card"><div class="done"><span class="ok"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><h2>استلمنا فرصتك</h2><p class="muted" style="font-size:16px">نراجعها خلال يومي عمل</p><div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:10px"><a class="btn btn-lg" href="org.html">عرض فرصك</a><button type="button" class="btn btn-lg btn-ghost" id="again">انشر فرصة أخرى</button></div></div></div>';
@@ -162,7 +162,7 @@
       var ok = S.codeSent ? String(S.code).replace(/[٠-٩۰-۹\d]/g, 'x').replace(/[^x]/g, '').length >= 4 : /.+@.+\..+/.test(S.email);
       if (!ok) { S.err = true; renderLogin(); return; }
       S.err = false;
-      if (!S.codeSent) { S.codeSent = true; renderLogin(); } else { var isNamaa = S.email.trim().toLowerCase() === 'hr@namaa.org.sa'; try { if (isNamaa) sessionStorage.setItem('jam_org', 'جمعية نماء الأهلية'); else sessionStorage.removeItem('jam_org'); } catch (e) {} location.href = isNamaa ? 'org.html' : 'org-setup.html'; }
+      if (!S.codeSent) { S.codeSent = true; renderLogin(); } else { var isNamaa = S.email.trim().toLowerCase() === 'hr@lubna.example'; try { if (isNamaa) sessionStorage.setItem('jam_org', 'جمعية لبنة الأهلية'); else sessionStorage.removeItem('jam_org'); } catch (e) {} location.href = isNamaa ? 'org.html' : 'org-setup.html'; }
     }
     if (id === 'next') {
       if (S.step === 5 ? passAll(3, 6) : validStep()) {

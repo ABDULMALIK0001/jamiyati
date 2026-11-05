@@ -130,7 +130,7 @@
   <p>لن تُنشر فرصها، وتُرفض الفرص التي تنتظر المراجعة</p>
   <div class="btns"><button type="button" class="btn btn-danger" id="verNoOk">تأكيد</button><button type="button" class="btn btn-ghost" data-close>رجوع</button></div>
 </div></div>
-<script src="assets/data.js"></script>
+<script src="assets/data.js?v=2"></script>
 <script src="assets/app.js?v=9"></script>
 <script>
 (function(){
@@ -138,31 +138,31 @@
   var REASONS=['رابط التقديم لا يعمل','بريد التقديم غير صحيح أو لا يخص الجمعية','معلومات الفرصة ناقصة أو غير واضحة','سبب آخر'], OTHER=REASONS.length-1;
   var PENDING=[
     {id:'p1',t:'مساعد/ة إداري/ة',type:'دوام جزئي',cat:'إداري',city:'مكة المكرمة',mode:'حضوري',pay:'4,000 ريال شهريًا',
-     org:'جمعية نماء الأهلية',lic:'1187',mail:'hr@namaa.org.sa',isNew:false,when:'منذ ساعتين',
+     org:'جمعية لبنة الأهلية',lic:'1187',mail:'hr@lubna.example',isNew:false,when:'منذ ساعتين',
      about:'متابعة المراسلات وتنظيم ملفات المستفيدين ومواعيد الاجتماعات في مقر الجمعية.',
      tasks:['استقبال المراسلات وتوزيعها','تحديث ملفات المستفيدين','تنسيق مواعيد الاجتماعات'],
-     reqs:['دبلوم أو بكالوريوس في الإدارة','إتقان Excel'],perks:['دوام صباحي 5 ساعات'],apply:'https://namaa.org.sa/jobs/admin'},
-    {id:'p2',t:'معلم/ة قرآن متطوع',type:'تطوعية',cat:'تعليمي',city:'جدة',mode:'حضوري',pay:'شهادة تطوع',
-     org:'جمعية سَنَد لرعاية الأيتام',lic:'4520',mail:'sanad.jed@gmail.com',isNew:true,when:'منذ 5 ساعات',
-     about:'حلقات تحفيظ أسبوعية لأبناء الأسر المستفيدة في مقر الجمعية بحي الصفا.',
+     reqs:['دبلوم أو بكالوريوس في الإدارة','إتقان Excel'],perks:['دوام صباحي 5 ساعات'],apply:'https://lubna.example/jobs/admin'},
+    {id:'p2',t:'معلم/ة قرآن متطوع',type:'تطوعية',cat:'تعليمي',city:'مكة المكرمة',mode:'حضوري',pay:'شهادة تطوع',
+     org:'جمعية شراع لرعاية الأيتام',lic:'4520',mail:'sharaa.demo@gmail.example',isNew:true,when:'منذ 5 ساعات',
+     about:'حلقات تحفيظ أسبوعية لأبناء الأسر المستفيدة في مقر الجمعية بحي العزيزية.',
      tasks:['إدارة حلقة من 10 طلاب','متابعة الحفظ والمراجعة'],
-     reqs:['حفظ 10 أجزاء على الأقل','التزام يومين في الأسبوع'],perks:['شهادة تطوع موثقة'],apply:'sanad.jed@gmail.com'},
-    {id:'p3',t:'منسق/ة إعلامي/ة',type:'مؤقتة',cat:'تسويق وإعلام',city:'جدة',mode:'هجين',pay:'',
-     org:'جمعية سَنَد لرعاية الأيتام',lic:'4520',mail:'sanad.jed@gmail.com',isNew:true,when:'منذ 5 ساعات',
+     reqs:['حفظ 10 أجزاء على الأقل','التزام يومين في الأسبوع'],perks:['شهادة تطوع موثقة'],apply:'sharaa.demo@gmail.example'},
+    {id:'p3',t:'منسق/ة إعلامي/ة',type:'مؤقتة',cat:'تسويق وإعلام',city:'مكة المكرمة',mode:'هجين',pay:'',
+     org:'جمعية شراع لرعاية الأيتام',lic:'4520',mail:'sharaa.demo@gmail.example',isNew:true,when:'منذ 5 ساعات',
      about:'إدارة حسابات الجمعية خلال حملة رمضان لمدة 3 أشهر.',
      tasks:['كتابة المحتوى وجدولته','تغطية الفعاليات بالصور'],
-     reqs:['خبرة سنة في إدارة الحسابات'],perks:[],apply:'https://forms.gle/sanad-media'}
+     reqs:['خبرة سنة في إدارة الحسابات'],perks:[],apply:'https://forms.example/media'}
   ];
   window.demo.posted().forEach(function(x){
     if(x.st!=='wait') return;
     PENDING.unshift({id:x.id,posted:true,t:x.title,type:x.type,cat:x.cat,city:x.city,mode:x.mode,pay:x.pay,org:x.org,lic:'للتجربة',mail:'تجريبي@نسخة.عرض',isNew:false,when:'الآن',about:x.about,tasks:x.tasks,reqs:x.reqs,perks:x.perks,apply:x.apply||'https://example.org'});
   });
   var ORGS=[
-    {n:'جمعية نماء الأهلية',c:'مكة المكرمة',v:true},{n:'جمعية رِفد للرعاية الصحية',c:'جدة',v:true},
-    {n:'جمعية بُنيان للإسكان التنموي',c:'جدة',v:true},{n:'جمعية أثر للعمل التطوعي',c:'مكة المكرمة',v:true},
-    {n:'جمعية سَنَد لرعاية الأيتام',c:'جدة',v:false}
+    {n:'جمعية لبنة الأهلية',c:'مكة المكرمة',v:true},{n:'جمعية رحيق للرعاية الصحية',c:'مكة المكرمة',v:true},
+    {n:'جمعية هدير للإسكان التنموي',c:'مكة المكرمة',v:true},{n:'جمعية جسور النور للعمل التطوعي',c:'مكة المكرمة',v:true},
+    {n:'جمعية شراع لرعاية الأيتام',c:'مكة المكرمة',v:false}
   ];
-  var LIVE=JOBS.slice(), NEWMONTH=10;
+  var LIVE=JOBS.slice(), NEWMONTH=5;
   var $=function(id){return document.getElementById(id);}, app=$('app'), cur=null, pick=null;
 
   function groupBy(k,order){

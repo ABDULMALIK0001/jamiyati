@@ -49,7 +49,7 @@
     <nav aria-label="روابط إضافية"><a href="about.html">من نحن</a><a href="about.html#contact">تواصل معنا</a><a href="terms.html">الشروط والخصوصية</a></nav>
   </footer>
 </div>
-<script src="assets/data.js"></script>
+<script src="assets/data.js?v=2"></script>
 <script src="assets/app.js?v=9"></script>
 <script>
 document.addEventListener('click',function(e){var b=e.target.closest('[data-copy]');if(!b)return;var t=b.dataset.copy,l=b.querySelector('span');var done=function(){l.textContent='نُسخ';setTimeout(function(){l.textContent='انسخ';},1800);};if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,done);else done();});
