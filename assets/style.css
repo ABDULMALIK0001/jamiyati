@@ -42,6 +42,7 @@ button{font:inherit;color:inherit}
 .nav a:hover::after,.nav a[aria-current="page"]::after{transform:scaleX(1)}
 .hd-actions{display:flex;align-items:center;gap:8px}
 .menu-btn{display:none;width:44px;height:44px;border:0;background:transparent;border-radius:50%;cursor:pointer;align-items:center;justify-content:center}
+.menu-btn svg{width:28px;height:28px}
 .mnav{display:none}
 @media (max-width:900px){
   .hd-in{height:60px;padding:0 16px}
