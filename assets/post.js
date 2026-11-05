@@ -82,7 +82,7 @@
       '<div class="fld"><span>نمط العمل' + STAR + '</span>' + chips(['حضوري', 'هجين', 'عن بعد'], 'mode', 'c3') + '</div>' +
       (S.type === 'تطوعية'
         ? '<div class="fld"><span>المقابل' + STAR + '</span>' + chips(['شهادة تطوع', 'بدل تنقل', 'بدون مقابل'], 'perk', 'c3') + '</div>'
-        : '<div class="fld"><span>الراتب الشهري <span class="opt">(اختياري)</span></span><div class="money"><label>' + inp('payFrom', '', { ltr: 1, attrs: 'inputmode="numeric" maxlength="6" aria-label="من"' }) + '<span class="cur">ر.س</span></label><span class="muted">إلى</span><label>' + inp('payTo', '', { ltr: 1, attrs: 'inputmode="numeric" maxlength="6" aria-label="إلى"' }) + '<span class="cur">ر.س</span></label></div><span class="ferr" id="payErr" hidden>اجعل الحد الأدنى أقل من الأعلى</span></div>') +
+        : '<div class="fld"><span>الراتب الشهري <span class="opt">(اختياري)</span></span><div class="money"><label>' + inp('payFrom', '', { ltr: 1, attrs: 'inputmode="numeric" aria-label="من"' }) + '<span class="cur">ر.س</span></label><span class="muted">إلى</span><label>' + inp('payTo', '', { ltr: 1, attrs: 'inputmode="numeric" aria-label="إلى"' }) + '<span class="cur">ر.س</span></label></div><span class="ferr" id="payErr" hidden>اجعل الحد الأدنى أقل من الأعلى</span></div>') +
       '';
     if (s === 4) body = '<h2>التفاصيل</h2>' +
       fld('عن الفرصة', ta('about', 'مثلًا: نبحث عن شخص يتابع برامج الأسر في الأحياء', 3)) +
@@ -129,10 +129,10 @@
     if (!k) return;
     if (k === 'payFrom' || k === 'payTo') {
       // أرقام موجبة فقط: نحوّل الأرقام العربية ونشيل أي حرف أو إشارة سالب
-      var raw = e.target.value, clean = String(raw).replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/[۰-۹]/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d); }).replace(/\D/g, '').replace(/^0+/, '').slice(0, 6);
+      var raw = e.target.value, clean = String(raw).replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/[۰-۹]/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d); }).replace(/[.٫]\d{1,2}(?!\d)/g, '').replace(/\D/g, '').replace(/^0+/, '').slice(0, 6);
       if (clean !== raw) { var cp = Math.max(0, (e.target.selectionStart || 0) - (raw.length - clean.length)); e.target.value = clean; try { e.target.setSelectionRange(cp, cp); } catch (x) {} }
       S[k] = clean;
-      var pe = document.getElementById('payErr'); if (pe && !pe.hidden) validStep();
+      var pe = document.getElementById('payErr'); if (pe && !pe.hidden) payWrong();
       return;
     }
     S[k] = e.target.value;
@@ -146,7 +146,8 @@
     if (S.step !== back) { S.step = back; render(); }
     return true;
   }
-  function validStep() { var bad = false; form.querySelectorAll('.form-card .fld').forEach(function (f) { var e = f.querySelector('.ferr'); if (!e) return; var ls = f.querySelectorAll('.in[data-l]'); if (ls.length) { var none = [].every.call(ls, function (x) { return !x.value.trim(); }); ls[0].classList.toggle('bad', none); e.hidden = !none; if (none) bad = true; return; } var i = f.querySelector('.in[data-k]'); if (!i || f.querySelector('.money')) return; var v = String(i.value).trim(), b = !v; if (!b && i.dataset.k === 'applyVal') b = S.apply === 'link' ? !/^(https?:\/\/)?[^\s.]+\.[^\s]+$/.test(v) : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); i.classList.toggle('bad', b); e.hidden = !b; if (b) bad = true; }); var pe = document.getElementById('payErr'); if (pe) { var lo = num(S.payFrom), hi = num(S.payTo), wrong = lo > 0 && hi > 0 && lo > hi; pe.hidden = !wrong; form.querySelectorAll('[data-k="payFrom"],[data-k="payTo"]').forEach(function (x) { x.classList.toggle('bad', wrong); }); if (wrong) bad = true; } if (bad) { var x = form.querySelector('.in.bad'); if (x) x.focus(); return false; } return true; }
+  function payWrong() { var pe = document.getElementById('payErr'); if (!pe) return false; var lo = num(S.payFrom), hi = num(S.payTo), wrong = lo > 0 && hi > 0 && lo > hi; pe.hidden = !wrong; form.querySelectorAll('[data-k="payFrom"],[data-k="payTo"]').forEach(function (x) { x.classList.toggle('bad', wrong); }); return wrong; }
+  function validStep() { var bad = false; form.querySelectorAll('.form-card .fld').forEach(function (f) { var e = f.querySelector('.ferr'); if (!e) return; var ls = f.querySelectorAll('.in[data-l]'); if (ls.length) { var none = [].every.call(ls, function (x) { return !x.value.trim(); }); ls[0].classList.toggle('bad', none); e.hidden = !none; if (none) bad = true; return; } var i = f.querySelector('.in[data-k]'); if (!i || f.querySelector('.money')) return; var v = String(i.value).trim(), b = !v; if (!b && i.dataset.k === 'applyVal') b = S.apply === 'link' ? !/^(https?:\/\/)?[^\s.]+\.[^\s]+$/.test(v) : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); i.classList.toggle('bad', b); e.hidden = !b; if (b) bad = true; }); if (payWrong()) bad = true; if (bad) { var x = form.querySelector('.in.bad'); if (x) x.focus(); return false; } return true; }
   document.addEventListener('click', function (e) {
     var c = e.target.closest('.chip');
     if (c) { S[c.dataset.k] = c.dataset.v; render(); return; }
