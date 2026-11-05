@@ -1,4 +1,11 @@
 /* جمعيتي — نسخة تجريبية */
+/* الخط مستضاف داخل الموقع. الرخصة في assets/fonts/LICENSE-OFL.txt */
+@font-face{font-family:'IBM Plex Sans Arabic';font-style:normal;font-weight:400;font-display:block;src:url(fonts/plex-arabic-400.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:'IBM Plex Sans Arabic';font-style:normal;font-weight:500;font-display:block;src:url(fonts/plex-arabic-500.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:'IBM Plex Sans Arabic';font-style:normal;font-weight:700;font-display:block;src:url(fonts/plex-arabic-700.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+0870-088E,U+0890-0891,U+0897-08E1,U+08E3-08FF,U+200C-200E,U+2010-2011,U+204F,U+2E41,U+FB50-FDFF,U+FE70-FE74,U+FE76-FEFC}
+@font-face{font-family:'IBM Plex Sans Arabic';font-style:normal;font-weight:400;font-display:block;src:url(fonts/plex-latin-400.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Sans Arabic';font-style:normal;font-weight:500;font-display:block;src:url(fonts/plex-latin-500.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'IBM Plex Sans Arabic';font-style:normal;font-weight:700;font-display:block;src:url(fonts/plex-latin-700.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
 :root{
   --ink:#1A1A1A; --muted:#545454; --line:#E3E3E3; --soft:#F2F2F2; --bg:#F7F7F7; --card:#FFFFFF;
   --brand:#17533F; --brand-tint:#E8EFEC; --warn:#A3470A; --vol-bg:#F8EEDB; --vol-fg:#7E520D;
@@ -70,14 +77,12 @@ button{font:inherit;color:inherit}
 .hero-demo p{margin-top:10px;font-size:14px;line-height:1.8;color:var(--muted)}
 .hero h1{font-size:clamp(34px,6vw,72px);line-height:1.3;font-weight:700}
 .hero h1 .l2{display:block;margin-top:8px;font-size:.6em;line-height:1.6;font-weight:700}
-.hero .w{display:inline-block;margin:0 .14em;animation:word .8s cubic-bezier(.2,.7,.2,1) both}
-@keyframes word{from{opacity:0;transform:translateY(22px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
-.hero .rise{animation:rise .7s .7s cubic-bezier(.2,.7,.2,1) both}
-@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero h1,.hero .rise{animation:fade .35s ease-out both}
+@keyframes fade{from{opacity:0}to{opacity:1}}
 .trust{display:flex;align-items:center;gap:8px;margin-top:28px;font-size:14px;font-weight:500;color:var(--muted)}
 .bob{width:44px;height:44px;border-radius:50%;background:#fff;box-shadow:0 6px 12px rgba(26,26,26,.08);display:flex;align-items:center;justify-content:center;animation:bob 1.8s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
-@media (prefers-reduced-motion:reduce){.hero .w,.hero .rise,.bob{animation:none}}
+@media (prefers-reduced-motion:reduce){.hero h1,.hero .rise,.bob{animation:none}}
 @media (max-width:760px){body{background-image:none}.hero{min-height:0;padding:56px 16px 48px}.hero .grow,.hero .bob{display:none}}
 
 /* أقسام */
@@ -507,3 +512,62 @@ select.in option{color:var(--ink)}
 .doc h1+.lead{margin-top:12px}
 .doc .mailrow{margin-top:12px}
 .doc p .mail{font-size:inherit}
+
+/* ===== تحديث التصميم: خلفية بيضاء ونظام موحد للأحجام ===== */
+/* الخلفية والبطاقات */
+:root{--bg:#FFFFFF;--shadow:none}
+body{background-image:none;line-height:1.6}
+.frame::before,.frame::after{display:none}
+.hd{background:rgba(255,255,255,.92)}
+.card,.steps li,.panel,.facts,.org-card,.stepper,.form-card,.idc,.ops,.doc,.box,.kpi,.note,.tip,.list,.empty{border:1px solid var(--line)}
+.kpi.hot{border-color:transparent}
+/* الزوايا: 14 و22 و32 */
+.stepper,.idc,.ops,.doc,#app .box,#app .kpi{border-radius:22px}
+.faq details,.review,.orow.need,.note,.perks li,.drop{border-radius:14px}
+/* محاذاة الهيدر والفوتر مع المحتوى */
+.hd-in{max-width:1184px}
+.ft{max-width:1184px;margin-inline:auto}
+/* مقدمة الرئيسية أقصر، فتظهر بداية الفرص */
+.hero{min-height:0;padding:48px 24px 24px}
+@media (min-width:761px){.sec{padding-top:56px}.tabs-row{margin-top:16px}.grid{margin-top:16px}}
+/* الأزرار: 44 و52 وظل أخف */
+.btn:not(.btn-ghost){box-shadow:0 4px 8px rgba(23,83,63,.14),inset 0 2px 4px rgba(255,255,255,.14)}
+.btn:not(.btn-ghost):hover{box-shadow:0 6px 12px rgba(23,83,63,.18),inset 0 2px 4px rgba(255,255,255,.14)}
+.orgs .btn{box-shadow:0 4px 8px rgba(0,0,0,.1)}
+.orgs .btn:hover{box-shadow:0 6px 12px rgba(0,0,0,.14)}
+.btn-danger{box-shadow:0 4px 8px rgba(180,35,24,.14),inset 0 2px 4px rgba(255,255,255,.14)!important}
+.btn-lg,.facts .btn,.mbar .btn,.dlg .btns .btn,#app .dbar .btn{height:52px}
+.complete .btn,.ops-hd .btn,.mailrow .btn,#app .prow .btn{height:44px}
+/* أحجام الخط: 12 و14 و16 و18 و20 و22 */
+.beta{font-size:12px}
+.nav a,.fact b,.perks b,.org-letter,.orow-t h3,.pay{font-size:16px}
+.pay{font-weight:700}
+.org-name,.fld,.lbl,.chip,.add,.link-btn,.review b,.menu a,.menu button,.dlg p,.note,.empty p,.ops-empty p,.setup-sub,.ended summary,.st .nm,#app .orgt,#app .kv,#app .bars b,#rejDlg .rsn label{font-size:14px}
+.card h3{font-size:20px;line-height:1.4}
+.ops-empty h3,.org-id p{font-size:18px}
+/* المسافة بين الأسطر في النصوص الطويلة */
+.panel p,.panel li,.doc p,.doc ul,#app .opd p,#app .opd li{line-height:1.8}
+/* وضوح النص الإرشادي */
+.in::placeholder,select.in:invalid,.st[disabled],.st .dot{color:#6B6B6B}
+/* الأيقونات بسماكة واحدة، وحذف سهم البطاقة */
+svg[stroke-width]{stroke-width:2}
+.card .arrow{display:none}
+/* الجوال */
+@media (max-width:960px){
+  .aside{display:contents}
+  .facts{order:-1}
+  .opp-grid{gap:16px}
+}
+@media (max-width:900px){
+  .hd .btn{height:44px}
+}
+@media (max-width:760px){
+  .hero{padding:48px 16px 16px}
+  .hero div.rise,.hero div.rise .btn{width:100%}
+  .orgs{border-radius:22px}
+}
+.dlg:focus{outline:none}
+/* مساحات اللمس في الجوال */
+.st{min-height:44px}
+.back,.rv .back{min-height:44px}
+.more{width:44px;height:44px}

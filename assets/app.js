@@ -28,6 +28,22 @@
       '<span class="due">' + esc(j.posted || '') + '</span></a>';
   };
 
+  // نسخة العرض: ما تنشره الجمعية ويقبله الأدمن يبقى في جلسة التصفح فقط، ولا يُرسل إلى أي مكان
+  function readDemo(key) { try { return JSON.parse(sessionStorage.getItem(key)) || []; } catch (e) { return []; } }
+  function writeDemo(key, value) { try { sessionStorage.setItem(key, JSON.stringify(value)); } catch (e) {} }
+  window.demo = {
+    posted: function () { return readDemo('jam_posted'); },
+    add: function (item) { var all = readDemo('jam_posted'); all.unshift(item); writeDemo('jam_posted', all); },
+    update: function (id, change) { writeDemo('jam_posted', readDemo('jam_posted').map(function (x) { return x.id === id ? Object.assign(x, change) : x; })); },
+    stopped: function () { return readDemo('jam_stopped'); },
+    stop: function (id) { var all = readDemo('jam_stopped'); all.push(id); writeDemo('jam_stopped', all); }
+  };
+  if (typeof JOBS !== 'undefined') {
+    var gone = window.demo.stopped();
+    for (var gi = JOBS.length - 1; gi >= 0; gi--) if (gone.indexOf(JOBS[gi].id) > -1) JOBS.splice(gi, 1);
+    window.demo.posted().forEach(function (x) { if (x.st === 'live' && gone.indexOf(x.id) < 0) JOBS.unshift(x); });
+  }
+
   // الرئيسية: التبويبات والكروت
   var grid = document.getElementById('jobs');
   if (grid) {
@@ -45,7 +61,8 @@
   var opp = document.getElementById('opp');
   if (opp) {
     var id = new URLSearchParams(location.search).get('id') || 'j1';
-    var j = JOBS.filter(function (x) { return x.id === id; })[0] || JOBS[0];
+    var j = JOBS.filter(function (x) { return x.id === id; })[0];
+    if (!j) { opp.innerHTML = '<a class="back" href="index.html#opps">العودة للفرص</a><h1 style="margin-top:16px">انتهى التقديم على هذه الفرصة</h1>'; return; }
     document.title = j.title + ' — جمعيتي';
     function ul(a) { return '<ul>' + a.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>'; }
     var facts = [['المقابل', j.pay], ['النوع', j.type], ['التصنيف', j.cat], ['نمط العمل', j.mode], ['المدينة', j.city]].filter(function (f) { return f[1]; });
@@ -79,6 +96,41 @@
       a.addEventListener('click', function (e) { e.preventDefault(); alertDemo(); });
     });
   }
+
+  // النوافذ: التركيز يبقى داخل النافذة المفتوحة، ويرجع للزر اللي فتحها بعد الإغلاق
+  var FOC = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+  function openOv() { return [].filter.call(document.querySelectorAll('.ov'), function (o) { return !o.hidden; })[0]; }
+  function seen(el) { return el && el.isConnected && el.getClientRects().length > 0; }
+  document.querySelectorAll('.ov').forEach(function (ov) {
+    var dlg = ov.querySelector('.dlg'); if (!dlg) return;
+    dlg.setAttribute('tabindex', '-1');
+    new MutationObserver(function () {
+      if (!ov.hidden) {
+        var a = document.activeElement;
+        if (a && !ov.contains(a) && a !== document.body) ov._opener = a;
+        setTimeout(function () { if (!ov.hidden && !ov.contains(document.activeElement)) dlg.focus(); }, 0);
+      } else {
+        var op = ov._opener; ov._opener = null;
+        if (op && !seen(op)) { var w = op.closest && op.closest('.mwrap'); op = w ? w.querySelector('.more') : null; }
+        if (seen(op)) op.focus();
+      }
+    }).observe(ov, { attributes: true, attributeFilter: ['hidden'] });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab') return;
+    var ov = openOv(); if (!ov) return;
+    var els = [].filter.call(ov.querySelectorAll(FOC), seen); if (!els.length) return;
+    var first = els[0], last = els[els.length - 1], a = document.activeElement;
+    if (!ov.contains(a)) { e.preventDefault(); (e.shiftKey ? last : first).focus(); }
+    else if (e.shiftKey && (a === first || a === ov.querySelector('.dlg'))) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && a === last) { e.preventDefault(); first.focus(); }
+  });
+
+  window.demoToast = function (text) {
+    var t = document.getElementById('toast');
+    if (!t) { t = document.createElement('div'); t.id = 'toast'; t.setAttribute('role', 'status'); t.style.cssText = 'position:fixed;left:50%;bottom:100px;transform:translateX(-50%);z-index:40;background:#1A1A1A;color:#fff;padding:12px 20px;border-radius:999px;font-size:14px;box-shadow:0 10px 24px rgba(0,0,0,.2);max-width:calc(100% - 32px);text-align:center'; document.body.appendChild(t); }
+    t.textContent = text; t.hidden = false; clearTimeout(t._h); t._h = setTimeout(function () { t.hidden = true; }, 2800);
+  };
 
   window.alertDemo = function () {
     var t = document.getElementById('toast');
