@@ -567,3 +567,7 @@ svg[stroke-width]{stroke-width:2}
   .orgs{border-radius:22px}
 }
 .dlg:focus{outline:none}
+/* مساحات اللمس في الجوال */
+.st{min-height:44px}
+.back,.rv .back{min-height:44px}
+.more{width:44px;height:44px}
