@@ -514,12 +514,14 @@ select.in option{color:var(--ink)}
 .doc .mailrow{margin-top:12px}
 .doc p .mail{font-size:inherit}
 
-/* ===== تحديث التصميم: خلفية بيضاء ونظام موحد للأحجام ===== */
+/* ===== تحديث التصميم: خلفية بيج فاتحة ونظام موحد للأحجام ===== */
 /* الخلفية والبطاقات */
-:root{--bg:#FFFFFF;--shadow:none}
+:root{--bg:#FBF8F1;--line:#EBE5D8;--soft:#F4EFE4;--shadow:none}
 body{background-image:none;line-height:1.6}
 .frame::before,.frame::after{display:none}
-.hd{background:rgba(255,255,255,.92)}
+.hd{background:rgba(251,248,241,.92)}
+.hd .btn-ghost{background:#F1EBDD}
+.hd .btn-ghost:hover,.hd .btn-ghost:active{background:#E8E0CE}
 .card,.steps li,.panel,.facts,.org-card,.stepper,.form-card,.idc,.ops,.doc,.box,.kpi,.note,.tip,.list,.empty{border:1px solid var(--line)}
 .kpi.hot{border-color:transparent}
 /* الزوايا: 14 و22 و32 */
